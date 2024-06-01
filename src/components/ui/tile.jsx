@@ -5,6 +5,7 @@ import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Button } from './button';
+import { BsThreeDots } from "react-icons/bs";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -36,7 +37,7 @@ const Tile = React.forwardRef(
         ref={ref}
         
       >{children}
-      <Button variant="ghost" size="sm" className="absolute top-0 right-0 mr-1.5">...</Button>
+      <Button variant="ghost" size="sm" className="absolute top-0 right-0 m-1.5"><BsThreeDots /></Button>
       </Comp>
     );
   }

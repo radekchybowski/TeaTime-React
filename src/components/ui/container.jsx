@@ -2,9 +2,9 @@ import React from 'react';
 
 const Container = ({children}) => {
     return (
-      <div className={'flex flex-col justify-center items-center h-screen m-1 p-4 gap-7 rounded-md bg-secondary'}>
+      <main className={'flex flex-col items-center h-screen m-1 p-4 gap-7 overflow-scroll rounded-md bg-container'}>
         { children }
-      </div>
+      </main>
     );
 };
 
