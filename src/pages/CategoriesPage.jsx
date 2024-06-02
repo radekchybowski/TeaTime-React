@@ -1,11 +1,27 @@
+import CategoryTile from "@/components/blocks/CategoryTile";
+import Section from "@/components/ui/section";
 
 const CategoriesPage = () => {
   return (
-    <>
-      <div className='h-full flex justify-center items-center'>
-        <h1 className='text-3xl'>Under construction</h1>
-      </div>
-    </>
+    <Section title="Categories">
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
+      
+    </Section>
   );
 };
 

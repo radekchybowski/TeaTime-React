@@ -1,11 +1,33 @@
+import Section from "@/components/ui/section";
+import { Tile } from "@/components/ui/tile";
 
 const CollectionsPage = () => {
   return (
-    <>
-      <div className='h-full flex justify-center items-center'>
-        <h1 className='text-3xl'>Under construction</h1>
-      </div>
-    </>
+    <Section title="Collections">
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+      <Tile>Dupsko</Tile>
+    </Section>
   );
 };
 

@@ -29,6 +29,7 @@ module.exports = {
         background: "#FEFFFC",
         foreground: "hsl(var(--foreground))",
         container: "#F4F5F0",
+        tile: '#E4E8E4',
         primary: {
           DEFAULT: '#866D3D',
           foreground: "hsl(var(--primary-foreground))",

@@ -53,10 +53,14 @@ const NavPane = ({className}) => {
           </Button>
         </div>
 
-        <div className={'flex h-4/5 flex-col pt-0 p-4 gap-2.5 rounded-md bg-card'}>
-          <div className='flex justify-between w-full'>
-            <Button className="p-0 text-outline-foqreground" variant="nav"><MdCollectionsBookmark />Collections</Button>
-            <Button className="inline-block" variant="outline" size="sm"><FaPlus /></Button>
+        <div className={'flex flex-1 h-1/5 flex-col pt-0 p-4 gap-2.5 rounded-md bg-card'}>
+          <div className='flex justify-between items-center w-full'>
+            <Button asChild className="p-0 text-outline-foqreground" variant="nav">
+              <NavLink to="collections">
+                <MdCollectionsBookmark />Collections
+              </NavLink>
+            </Button>
+            <Button className="h-fit" variant="outline" size="sm"><FaPlus /></Button>
           </div>
           <div className='w-full overflow-scroll rounded-md grid grid-cols-2 gap-2.5'>
             <Tile>Dupsko</Tile>
