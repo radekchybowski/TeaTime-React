@@ -74,3 +74,15 @@
       @apply bg-background text-foreground;
     }
   }
+
+.active {
+  @apply font-bold
+}
+
+.MobileNavButton.active {
+  @apply bg-container
+}
+
+.blurred-bg-img {
+  box-shadow: inset 5px 50px 5px 5px rgba(255, 255, 255, 0.985);;
+}

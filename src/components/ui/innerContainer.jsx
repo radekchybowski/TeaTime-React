@@ -1,8 +1,7 @@
-import React from 'react';
 
-const InnerContainer = ({children}) => {
+const InnerContainer = ({children, className}) => {
     return (
-      <div className={'flex flex-col justify-center items-center p-4 gap-2.5 rounded-md bg-card'}>
+      <div className={`flex flex-col justify-center items-center p-4 gap-2.5 rounded-md bg-card ${className}`}>
         { children }
       </div>
     );

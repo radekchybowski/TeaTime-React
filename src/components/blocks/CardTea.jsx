@@ -1,11 +1,12 @@
-import React from 'react';
 import { Button } from '../ui/button';
 import Rating from '../ui/rating';
 import { FaRegPlusSquare } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
+import { NavLink } from 'react-router-dom';
 
 export default function CardTea() {
     return (
+      <NavLink to="tea">
         <div className='text-left max-w-64 min-w-44 bg-card rounded-lg overflow-hidden shadow-md'>
           <img className="h-24 w-full object-cover" src="/img/teaCard-bg.jpg" alt="" />
           <div className='p-2.5 pb-4'>
@@ -23,7 +24,8 @@ export default function CardTea() {
             dsdsdsdsdsdsdsdsds
             dsdsdsd sdsds...</p>
           </div>
-          
         </div>
+      </NavLink>
+        
     );
 }
