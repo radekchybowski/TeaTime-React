@@ -1,27 +1,13 @@
 import CategoryTile from "@/components/blocks/CategoryTile";
 import Section from "@/components/ui/section";
+import useFetch from "../hooks/useFetch";
 
 const CategoriesPage = () => {
+
+  
+
   return (
-    <Section title="Categories">
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      <CategoryTile image="img/tea-placeholder.jpg">White Tea</CategoryTile>
-      
-    </Section>
+    <Section title="Categories" fetch='categories' component='category'/>
   );
 };
 

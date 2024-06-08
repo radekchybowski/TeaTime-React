@@ -55,7 +55,7 @@ const NavPane = ({className}) => {
 
         <div className={'flex flex-1 h-1/5 flex-col pt-0 p-4 gap-2.5 rounded-md bg-card'}>
           <div className='flex justify-between items-center w-full'>
-            <Button asChild className="p-0 text-outline-foqreground" variant="nav">
+            <Button asChild className="p-0 text-outline-foreground" variant="nav">
               <NavLink to="collections">
                 <MdCollectionsBookmark />Collections
               </NavLink>
@@ -63,31 +63,25 @@ const NavPane = ({className}) => {
             <Button className="h-fit" variant="outline" size="sm"><FaPlus /></Button>
           </div>
           <div className='w-full overflow-scroll rounded-md grid grid-cols-2 gap-2.5'>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
-            <Tile>Dupsko</Tile>
+            <Tile>Saved teas</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
+            <Tile>Teas for doggos</Tile>
           </div>
           
         </div>

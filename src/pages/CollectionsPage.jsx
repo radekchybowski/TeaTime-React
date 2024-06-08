@@ -4,29 +4,25 @@ import { Tile } from "@/components/ui/tile";
 const CollectionsPage = () => {
   return (
     <Section title="Collections">
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
-      <Tile>Dupsko</Tile>
+      <Tile>Saved teas</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
+      <Tile>Teas for doggos</Tile>
     </Section>
   );
 };
