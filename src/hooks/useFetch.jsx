@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 
 const fetchResource = async (path, method, search) => {
   let data;
-  await fetch(`http://localhost:8000/api/${path}`, {
+  const validated_path = path.replace('/api/', '')
+  await fetch(`http://localhost:8000/api/${validated_path}`, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
@@ -17,6 +18,7 @@ const useFetch = (path, method = 'GET', search) => {
   return useQuery({
     queryFn: () => fetchResource(path, method),
     queryKey: [path],
+    cacheTime: 0
   });
 }
 

@@ -4,7 +4,8 @@ import { FaRegPlusSquare } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 
-export default function CardTea() {
+export default function CardTea({properties: { id, title, category, ingredients}}) {
+
     return (
         <div className='flex-1 text-left min-w-96 sm:min-w-44 sm:max-w-96 bg-card rounded-lg overflow-hidden shadow-md'>
           <img className="h-24 w-full object-cover" src="/img/teaCard-bg.jpg" alt="" />
@@ -16,13 +17,10 @@ export default function CardTea() {
                 <Button className="" size="sm" variant="outline"><FaRegPlusSquare className='text-lg'/></Button>
               </div>
             </div>
-            <NavLink to="tea">
-            <h3 className='text-2xl font-medium'>Pure Angel</h3>
-            <span className='text-xl text-primary'>White tea</span>
-            <p className='mt-1 text-wrap text-card-foreground'>White tea, chocolate, orchidds
-            dsds
-            dsdsdsdsdsdsdsdsds
-            dsdsdsd sdsds...</p>
+            <NavLink to={`/teas/${id}`}>
+            <h3 className='text-2xl font-medium'>{title}</h3>
+            <span className='text-xl text-primary'>{category.title}</span>
+            <p className='mt-1 text-wrap text-card-foreground'>{ingredients}</p>
             </NavLink>
           </div>
         </div>
