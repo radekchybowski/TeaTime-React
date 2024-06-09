@@ -2,7 +2,7 @@ import { Button } from '../ui/button';
 import Rating from '../ui/rating';
 import { FaRegPlusSquare } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 export default function CardTea({properties: { id, title, category, ingredients}}) {
 
@@ -19,7 +19,7 @@ export default function CardTea({properties: { id, title, category, ingredients}
             </div>
             <NavLink to={`/teas/${id}`}>
             <h3 className='text-2xl font-medium'>{title}</h3>
-            <span className='text-xl text-primary'>{category.title}</span>
+            <Link to={`/categories/${category.id}`}><span className='text-xl text-primary'>{category.title}</span></Link>
             <p className='mt-1 text-wrap text-card-foreground'>{ingredients}</p>
             </NavLink>
           </div>

@@ -5,17 +5,29 @@ import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import Rating from "@/components/ui/rating";
 import { Textarea } from "@/components/ui/textarea";
-import useFetch from "@/hooks/useFetch";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import genericFetch from "@/hooks/genericFetch";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaBalanceScaleLeft } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 const TeaPage = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {id} = useParams();
-  const {data, isLoading} = useFetch(`teas/${id}`);
-  useEffect(() => {
-    console.log(data)
-  },[data])
+  const path = `teas/${id}`;
+  const {data, isLoading} = useQuery({
+    queryFn: () => genericFetch({path: path}),
+    queryKey: [path],
+    cacheTime: 0
+  });
+
+  const deleteTea = () => {
+      genericFetch({ path: path, method: 'DELETE' });
+      console.log('usuniete');
+      queryClient.invalidateQueries()
+      navigate('/')
+  }
   
 
   return (
@@ -31,7 +43,7 @@ const TeaPage = () => {
           <Button variant="outline" size="icon">Edit</Button>
           <Button variant="outline" size="icon">Edit</Button>
           <Button variant="outline">Edit</Button>
-          <Button variant="warning">Delete</Button>
+          <Button onClick={() => {deleteTea()}} variant="warning">Delete</Button>
       </ContentHeader>
       <InnerContainer>
         <h3>Description</h3>

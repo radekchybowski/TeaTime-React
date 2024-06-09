@@ -1,15 +1,102 @@
 import BrewingTile from "@/components/blocks/BrewingTile";
-import Comment from "@/components/blocks/Comment";
 import ContentHeader from "@/components/blocks/ContentHeader";
 import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
-import Rating from "@/components/ui/rating";
 import { Textarea } from "@/components/ui/textarea";
 import { FaBalanceScaleLeft } from "react-icons/fa";
 
-const AddTeaPage = () => {
+import { z } from 'zod';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import genericFetch from '@/hooks/genericFetch';
+import { useEffect, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
+
+export function AddTeaPage() {
+
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const categoryQuery = useQuery({
+    queryFn: () => genericFetch({path: 'categories'}),
+    queryKey: ['categories'],
+    // cacheTime: 0
+  });
+
+  const {mutateAsync: addTeaMutation} = useMutation({
+    mutationFn: genericFetch,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['teas'])
+      console.log('success')
+      navigate('/')
+    },
+    onError: (error) => console.error(error)
+  })
+
+  const addTeaSchema = z.object({
+    title: z.string()
+    .min(3, {
+      message: "Title must have at least three characters.",
+    })
+    .max(255, {
+      message: "Title must have less than 255 characters."
+    }),
+    category: z.string().min(1, {
+      required_error: "Category must be selected.",
+    }),
+    description: z.string().min(20, {
+      message: "Write at least couple of words.",
+    }),
+    ingredients: z.string().min(3),
+    steepTime: z.coerce.number().min(1),
+    steepTemp: z.coerce.number().min(1),
+    region: z.string().min(3).optional(),
+    vendor: z.string().min(3).optional()
+  })
+
+  const form = useForm({
+    resolver: zodResolver(addTeaSchema),
+    defaultValues: {
+      title: "",
+    },
+  })
+ 
+  function addTeaSubmit(values) {
+    values = {...values, author: 'api/users/15'}
+    values = JSON.stringify(values)
+    addTeaMutation({path: 'teas', method: 'POST', body: values})
+    console.log(values)
+  }
+
+
+
+
+
+
   return (
+    
+    <Form {...form}>
+    <form onSubmit={form.handleSubmit(addTeaSubmit)}>
     <div className="flex flex-col w-full gap-4">
+              
       <ContentHeader 
         image="img/tea-placeholder.jpg" 
         title="Add new tea"
@@ -17,83 +104,178 @@ const AddTeaPage = () => {
           <Button variant="outline">Cancel</Button>
           <Button>Save tea</Button>
       </ContentHeader>
+
       <InnerContainer>
-        <h3>Description</h3>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit eaque iusto consectetur corrupti libero!</p>
-        <p>A atque magni sit ullam ad doloremque dolorem ratione impedit exercitationem amet quia deserunt repellendus repellat aliquam enim, quam aut quae error ipsam vel maxime. Vitae.</p>
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="">Tea name (title)</FormLabel>
+              <FormControl>
+                <Input className="h-10" placeholder="Name of tea..." {...field} />
+              </FormControl>
+              <FormDescription className="">
+                Name should be descriptive (and unique).
+              </FormDescription>
+              <FormMessage className=""/>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category (kind)" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {categoryQuery.data?.map(category => (
+                    <SelectItem key={category.id} value={`api/categories/${category.id}`}>{category.title}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Select category (kind) of this tea.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </InnerContainer>
+
       <InnerContainer>
-        <h3>Ingredients</h3>
-        <p>pineapple, sunflowers, matcha, oolong, roses, majeranek</p>
-        <p><b>Region </b>Japan</p>
-        <p><b>Store </b>e-herbata.pl</p>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="">Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write something more about that tea you love soooo much."
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription className="">
+                
+              </FormDescription>
+              <FormMessage className=""/>
+            </FormItem>
+          )}
+        />
+        
       </InnerContainer>
       <InnerContainer>
         <h3>Brewing</h3>
         <div className="flex flex-wrap gap-2.5">
-          <BrewingTile
-            icon={<FaBalanceScaleLeft />}
-            title="amount"
-            content="5-6 g"
+          <FormField
+            control={form.control}
+            name="steepTime"
+            render={({ field }) => (
+              <FormItem className="flex-1 text-center">
+                <BrewingTile className="min-w-72"
+                  icon={<FaBalanceScaleLeft />}
+                  title={<FormDescription>Time range (in minutes) for how long you should steep this tea.</FormDescription>}
+                  content={
+                    <>
+                      <FormLabel>Time</FormLabel>
+                      <FormControl>
+                        <Input type="number" className="h-10" placeholder="3-4" {...field} />
+                      </FormControl>
+                      <FormMessage/>
+                    </>
+                  }
+                /> 
+              </FormItem>
+            )}
           />
-          <BrewingTile
-            icon={<FaBalanceScaleLeft />}
-            title="amount"
-            content="5-6 g"
-          />
-          <BrewingTile
-            icon={<FaBalanceScaleLeft />}
-            title="amount"
-            content="5-6 g"
-          />
-          <BrewingTile
-            icon={<FaBalanceScaleLeft />}
-            title="amount"
-            content="5-6 g"
+          <FormField
+            control={form.control}
+            name="steepTemp"
+            render={({ field }) => (
+              <FormItem className="flex-1 text-center">
+                <BrewingTile className="min-w-72"
+                  icon={<FaBalanceScaleLeft />}
+                  title={<FormDescription>Temperature range or value (in Celsius).</FormDescription>}
+                  content={
+                    <>
+                      <FormLabel>Time</FormLabel>
+                      <FormControl>
+                        <Input type="number" className="h-10" placeholder="75-85" {...field} />
+                      </FormControl>
+                      <FormMessage/>
+                    </>
+                  }
+                /> 
+              </FormItem>
+            )}
           />
         </div>
       </InnerContainer>
-      <InnerContainer>
-        <h3>Tags</h3>
-        <div className="flex flex-wrap gap-2.5">
-          <Button className="bg-tile text-secondary-foreground hover:bg-tile/50" size="sm">christmas time</Button>
-          <Button className="bg-tile text-secondary-foreground" size="sm">christmas time</Button>
-          <Button className="bg-tile text-secondary-foreground" size="sm">christmas time</Button>
-          <Button className="bg-tile text-secondary-foreground" size="sm">christmas time</Button>
-          </div>
-      </InnerContainer>
-      <InnerContainer>
-        <p><b>Author </b>@nickname</p>
-        <p><b>Last update </b>2024-04-11</p>
-      </InnerContainer>
-      <InnerContainer>
-        <h3>Your notes</h3>
-        <Textarea/>
-        <Button className="w-fit">Save</Button>
-      </InnerContainer>
-      <InnerContainer>
-        <h3>Comments</h3>
-        <Comment
-          content="Reiciendis et qui corporis. Aut nostrum distinctio similique autem ut voluptas. Sit et dolore ipsum laudantium dolore sit quaerat. Est doloribus architecto ut doloremque numquam qui. Ducimus placeat repellendus occaecati tempore."
-          nickname="@nickname"
-          date="August 7th at 1:33pm"
-        />
-        <Comment
-          content="Reiciendis et qui corporis. Aut nostrum distinctio similique autem ut voluptas. Sit et dolore ipsum laudantium dolore sit quaerat. Est doloribus architecto ut doloremque numquam qui. Ducimus placeat repellendus occaecati tempore."
-          nickname="@nickname"
-          date="August 7th at 1:33pm"
-        />
-        <Comment
-          content="Reiciendis et qui corporis. Aut nostrum distinctio similique autem ut voluptas. Sit et dolore ipsum laudantium dolore sit quaerat. Est doloribus architecto ut doloremque numquam qui. Ducimus placeat repellendus occaecati tempore."
-          nickname="@nickname"
-          date="August 7th at 1:33pm"
-        />
-        <Textarea placeholder="Type your message here..."/>
-        <Button className="w-fit">Save</Button>
-      </InnerContainer>
 
+      <InnerContainer>
+      <FormField
+          control={form.control}
+          name="ingredients"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="">Ingredients</FormLabel>
+              <FormControl>
+                <Textarea className="min-h-16" placeholder="white tea, pai mu tan, cranberries, lavender..." {...field} />
+              </FormControl>
+              <FormDescription className="">
+                Please separate each ingredient with a comma.
+              </FormDescription>
+              <FormMessage className=""/>
+            </FormItem>
+          )}
+        />
+        <div className="flex flex-wrap gap-4">
+        <FormField
+          control={form.control}
+          name="region"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel className="">Region</FormLabel>
+              <FormControl>
+                <Input className="h-10" placeholder="Ceylon" {...field} />
+              </FormControl>
+              <FormDescription className="">
+                Place of origin for this tea.
+              </FormDescription>
+              <FormMessage className=""/>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="vendor"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel className="">Store</FormLabel>
+              <FormControl>
+                <Input className="h-10" placeholder="e-herbata.pl" {...field} />
+              </FormControl>
+              <FormDescription className="">
+                Store where you have got this tea!
+              </FormDescription>
+              <FormMessage className=""/>
+            </FormItem>
+          )}
+        />
+        </div>
+      </InnerContainer>
     </div>
+    </form>
+    </Form>
   );
 };
 
 export default AddTeaPage;
+
