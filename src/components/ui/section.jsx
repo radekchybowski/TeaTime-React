@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
+import ErrorPane from '../blocks/ErrorPane';
 
 const Section = ({title = null, fetch='teas', component, children, className}) => {
 
@@ -27,7 +28,7 @@ const Section = ({title = null, fetch='teas', component, children, className}) =
   const [header, setHeader] = useState(title);
   const [showForm, setShowForm] = useState(false);
 
-  const {data, isLoading} = useQuery({
+  const {data, isLoading, error} = useQuery({
     queryFn: () => genericFetch({path: fetch, search: searchQuery}),
     queryKey: [fetch, {searchQuery}],
     // cacheTime: 0
@@ -101,6 +102,7 @@ const Section = ({title = null, fetch='teas', component, children, className}) =
       </div>
       <div className='w-full flex flex-wrap gap-4'>
       {isLoading && <div className="w-100 h-100 flex justify-center items-center text-3xl">Loading...</div>}
+      {error && <ErrorPane description={error.name}/>}
       {content}
       { children }
       </div>

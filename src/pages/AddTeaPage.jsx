@@ -101,7 +101,7 @@ export function AddTeaPage() {
         image="img/tea-placeholder.jpg" 
         title="Add new tea"
       >
-          <Button variant="outline">Cancel</Button>
+          <Button onClick={() => navigate(-1)} variant="outline">Cancel</Button>
           <Button>Save tea</Button>
       </ContentHeader>
 

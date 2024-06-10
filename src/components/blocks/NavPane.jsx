@@ -1,14 +1,16 @@
 import React from 'react';
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FaHouse, FaMagnifyingGlass } from "react-icons/fa6";
-import { FaBookMedical, FaPlus, FaArrowLeft } from "react-icons/fa";
+import { FaBookMedical, FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { BiSolidCategory } from "react-icons/bi";
 import { MdCollectionsBookmark } from "react-icons/md";
 import { Tile } from '../ui/tile';
 
 const NavPane = ({className}) => {
+  const navigate = useNavigate();
+
     return (
       <header className={`flex flex-col h-screen w-full sm:w-auto min-w-92 m-1 p-2.5 gap-2.5 rounded-md bg-container ${className}`}>
         <div className='flex justify-between'>
@@ -16,12 +18,8 @@ const NavPane = ({className}) => {
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div>
-            <Button asChild size="icon" variant="ghost">
-              <NavLink to="/">
-                <FaArrowLeft className='text-xl'/>
-              </NavLink>
-            </Button>
+          
+          <div className='flex'>
             <Button asChild size="icon" variant="ghost">
               <NavLink to="search">
                 <FaMagnifyingGlass className='text-xl'/>
@@ -32,6 +30,14 @@ const NavPane = ({className}) => {
                 <FaPlus className='text-xl'/>
               </NavLink>
             </Button>
+            <div className='bg-card rounded-md'>
+              <Button className="rounded-md" onClick={() => navigate(-1)} size="icon" variant="ghost">
+                  <FaArrowLeft className='text-xl'/>
+              </Button>
+              <Button className="rounded-md" onClick={() => navigate(+1)} size="icon" variant="ghost">
+                  <FaArrowRight className='text-xl'/>
+              </Button>
+            </div>
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+import Alert from "@/components/blocks/Alert";
 import BrewingTile from "@/components/blocks/BrewingTile";
 import Comment from "@/components/blocks/Comment";
 import ContentHeader from "@/components/blocks/ContentHeader";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import Rating from "@/components/ui/rating";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import genericFetch from "@/hooks/genericFetch";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaBalanceScaleLeft } from "react-icons/fa";
@@ -14,8 +16,10 @@ import { useNavigate, useParams } from "react-router-dom";
 const TeaPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const {id} = useParams();
+  const { toast } = useToast();
+  const { id } = useParams();
   const path = `teas/${id}`;
+
   const {data, isLoading} = useQuery({
     queryFn: () => genericFetch({path: path}),
     queryKey: [path],
@@ -23,10 +27,20 @@ const TeaPage = () => {
   });
 
   const deleteTea = () => {
+    try {
       genericFetch({ path: path, method: 'DELETE' });
-      console.log('usuniete');
-      queryClient.invalidateQueries()
+      queryClient.invalidateQueries([])
       navigate('/')
+      toast({
+        title: `Tea ${data?.title} been deleted`,
+      })
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: {error},
+      })
+    }
   }
   
 
@@ -43,7 +57,13 @@ const TeaPage = () => {
           <Button variant="outline" size="icon">Edit</Button>
           <Button variant="outline" size="icon">Edit</Button>
           <Button variant="outline">Edit</Button>
-          <Button onClick={() => {deleteTea()}} variant="warning">Delete</Button>
+          <Alert
+            title="Are you absolutely sure?"
+            description="You are going to delete tea. This action cannot be undone."
+            actionButton={<Button onClick={() => {deleteTea()}} variant="destructive">Delete tea</Button>}
+          >
+            <Button variant="warning">Delete</Button></Alert>
+          
       </ContentHeader>
       <InnerContainer>
         <h3>Description</h3>

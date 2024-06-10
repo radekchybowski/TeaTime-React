@@ -1,13 +1,13 @@
-import MobileNavButton from "@/components/blocks/MobileNavButton"
-import NavPane from "@/components/blocks/NavPane"
-import Container from "@/components/ui/container"
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { NavLink, Outlet } from "react-router-dom"
+import { Toaster } from "@/components/ui/toaster"
+import { Outlet } from "react-router-dom"
 
 function RootLayout() {
 
   return (
-      <Outlet/>
+      <>
+        <Outlet/>
+        <Toaster/>
+      </>
   )
 }
 
