@@ -21,16 +21,18 @@ import { useQuery } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
 import ErrorPane from '../blocks/ErrorPane';
 
-const Section = ({title = null, fetch='teas', component, children, className}) => {
+const Section = ({title = null, fetch='teas', items=8, component, children, className}) => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [content, setContent] = useState("");
   const [header, setHeader] = useState(title);
+  const [pagination, setPagination] = useState(items);
   const [showForm, setShowForm] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const {data, isLoading, error} = useQuery({
-    queryFn: () => genericFetch({path: fetch, search: searchQuery}),
-    queryKey: [fetch, {searchQuery}],
+    queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination}),
+    queryKey: [fetch, {searchQuery, pagination}],
     // cacheTime: 0
   });
 
@@ -69,6 +71,18 @@ const Section = ({title = null, fetch='teas', component, children, className}) =
       setSearchQuery("")
   }
 
+  const clickShowMore = () => {
+    setShowMore(!showMore)
+    if(showMore) setPagination(items)
+    else setPagination(items * 2)
+  }
+
+  const clickLoadMore = () => {
+    if(!(pagination > data.length)) 
+      setPagination(pagination + items)
+    else setShowMore(false)
+  }
+
   return (
     <div className={`w-full ${className}`}>
       <div className='flex flex-wrap justify-between items-center mb-3'>
@@ -97,7 +111,9 @@ const Section = ({title = null, fetch='teas', component, children, className}) =
             </Form>
           )}
           <Button onClick={() => setShowForm(!showForm)} variant="ghost" size="sm"><FaMagnifyingGlass/></Button>
-          <Button variant="ghost" size="sm">Show more</Button>
+          <Button onClick={clickShowMore} variant="ghost" size="sm">
+            { showMore ? 'Show less' : 'Show more' }
+          </Button>
         </div>
       </div>
       <div className='w-full flex flex-wrap gap-4'>
@@ -106,6 +122,7 @@ const Section = ({title = null, fetch='teas', component, children, className}) =
       {content}
       { children }
       </div>
+      {showMore && <Button className="mt-4 block mx-auto" onClick={clickLoadMore} variant="outline" size="sm">Load more</Button>}
     </div>
   );
 };

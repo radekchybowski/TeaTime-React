@@ -1,14 +1,20 @@
 
-const genericFetch = async ({path, search, method = 'GET', body = null}) => {
+const genericFetch = async ({path, search, method = 'GET', body = null, pagination = null}) => {
   let data; 
-  let validated_path = path.replace('/api/', '')
-  if (search) {
+  path = path.replace('/api/', '')
+
+  if (pagination) {
     let separator = path.includes('?') ? '&' : '?';
-    validated_path = validated_path + separator + search;
+    path = path + separator + 'itemsPerPage=' + pagination;
   }
 
-  console.log(validated_path)
-  await fetch(`http://localhost:8000/api/${validated_path}`, {
+  if (search) {
+    let separator = path.includes('?') ? '&' : '?';
+    path = path + separator + search;
+  }
+
+  console.log(path)
+  await fetch(`http://localhost:8000/api/${path}`, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
