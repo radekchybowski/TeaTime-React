@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {NavLink, useNavigate} from "react-router-dom";
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -7,18 +7,28 @@ import { FaBookMedical, FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa
 import { BiSolidCategory } from "react-icons/bi";
 import { MdCollectionsBookmark } from "react-icons/md";
 import { Tile } from '../ui/tile';
+import { UserContext } from '@/App';
+import { useQuery } from '@tanstack/react-query';
+import genericFetch from '@/hooks/genericFetch';
 
 const NavPane = ({className}) => {
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
+
+  const {data: collections, isLoading} = useQuery({
+    queryFn: () => genericFetch({path: `tealists`, search: `author.id=${user}`}),
+    queryKey: [`tealists`],
+    cacheTime: 0
+  });
 
     return (
       <header className={`flex flex-col h-screen w-full sm:w-auto min-w-92 m-1 p-2.5 gap-2.5 rounded-md bg-container ${className}`}>
         <div className='flex justify-between'>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src="img/teaCard-bg.jpg" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          
+          {user}
           <div className='flex'>
             <Button asChild size="icon" variant="ghost">
               <NavLink to="search">
@@ -69,29 +79,12 @@ const NavPane = ({className}) => {
             <Button className="h-fit" variant="outline" size="sm"><FaPlus /></Button>
           </div>
           <div className='w-full overflow-scroll rounded-md grid grid-cols-2 gap-2.5'>
-            <Tile>Saved teas</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
-            <Tile>Teas for doggos</Tile>
+            {collections?.map(
+              collection => <Tile key={collection.id}>{collection.title}</Tile>
+              )
+            }
           </div>
-          
         </div>
-
       </header>
     );
 };

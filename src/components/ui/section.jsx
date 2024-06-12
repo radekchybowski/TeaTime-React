@@ -29,6 +29,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
   const [pagination, setPagination] = useState(items);
   const [showForm, setShowForm] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [loadMore, setLoadMore] = useState(false);
 
   const {data, isLoading, error} = useQuery({
     queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination}),
@@ -73,14 +74,20 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
 
   const clickShowMore = () => {
     setShowMore(!showMore)
-    if(showMore) setPagination(items)
-    else setPagination(items * 2)
+    if(showMore) {
+      setPagination(items)
+      setLoadMore(false)
+    } else {
+      setPagination(items * 2)
+      setLoadMore(true)
+    }
+    if(pagination > data.length) setLoadMore(false)
   }
 
   const clickLoadMore = () => {
     if(!(pagination > data.length)) 
       setPagination(pagination + items)
-    else setShowMore(false)
+    else setLoadMore(false)
   }
 
   return (
@@ -122,7 +129,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
       {content}
       { children }
       </div>
-      {showMore && <Button className="mt-4 block mx-auto" onClick={clickLoadMore} variant="outline" size="sm">Load more</Button>}
+      {loadMore && <Button className="mt-4 block mx-auto" onClick={clickLoadMore} variant="outline" size="sm">Load more</Button>}
     </div>
   );
 };

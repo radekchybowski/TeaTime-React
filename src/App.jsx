@@ -13,6 +13,7 @@ import RootLayout from './layouts/RootLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import TeaPage from './pages/TeaPage';
 import CategoryPage from './pages/CategoryPage';
+import { createContext, useState } from 'react';
 
 
 const router = createBrowserRouter(
@@ -34,14 +35,36 @@ const router = createBrowserRouter(
     </Route>
   )
 )
-
 const queryClient = new QueryClient(); // Initialize queryClient with a new instance of QueryClient
+export const AuthContext = createContext({
+  auth: {
+    user: false,
+    token: null
+  },
+  setAuth: () => {}
+});
 
 function App() {
+  const setAuth = (auth) => {
+    setState({...state, auth: auth})
+  }
+
+  const initState = {
+    auth: {
+      user: false,
+      token: null
+    },
+    setAuth: setAuth
+  } 
+
+  const [state, setState] = useState(initState)
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <AuthContext.Provider value={state}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </AuthContext.Provider>
   )
 }
 

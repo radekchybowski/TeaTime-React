@@ -38,7 +38,7 @@ const TeaPage = () => {
       toast({
         variant: "destructive",
         title: "Something went wrong.",
-        description: {error},
+        description: error.message,
       })
     }
   }
