@@ -1,7 +1,7 @@
 import { Button } from './button';
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import CategoryTile from '../blocks/CategoryTile';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Tile } from './tile';
 import CardTea from '../blocks/CardTea';
 import { z } from 'zod';
@@ -20,6 +20,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
 import ErrorPane from '../blocks/ErrorPane';
+import { AuthContext } from '@/App';
 
 const Section = ({title = null, fetch='teas', items=8, component, children, className}) => {
 
@@ -30,9 +31,10 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
   const [showForm, setShowForm] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
+  const { auth } = useContext(AuthContext);
 
   const {data, isLoading, error} = useQuery({
-    queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination}),
+    queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination, token: auth.token}),
     queryKey: [fetch, {searchQuery, pagination}],
     // cacheTime: 0
   });

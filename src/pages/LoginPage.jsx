@@ -7,16 +7,18 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs"
-import { UserContext } from "@/App"
-import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
+import { useEffect } from "react";
 
 
 export default function LoginPage() {
-const { user, setUser } = useContext(UserContext)
 const navigate = useNavigate();
 
-if (user != null) navigate('/');
+useEffect(() => {
+  if(localStorage.getItem('token')) {
+    navigate('/')
+  }
+},[])
 
   return (
     <main className="h-screen flex flex-col justify-center items-center">
@@ -30,7 +32,6 @@ if (user != null) navigate('/');
             <LoginForm />
           </TabsContent>
           <TabsContent value="register">
-            {user && <p>You are already logged in.</p>}
             <RegisterForm />
           </TabsContent>
         </Tabs>

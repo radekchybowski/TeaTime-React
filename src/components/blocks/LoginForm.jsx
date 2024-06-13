@@ -28,6 +28,7 @@ import { useToast } from "../ui/use-toast"
 import { useContext } from "react"
 import { AuthContext } from "@/App"
 import loginFetch from "@/hooks/loginFetch"
+import genericFetch from "@/hooks/genericFetch"
 
 
 
@@ -40,8 +41,7 @@ const LoginForm = () => {
   const { mutateAsync: loginMutation, isPending } = useMutation({
     mutationFn: loginFetch,
     onSuccess: (data) => {
-      console.log(data)
-      setAuth({...auth, token: data.token})
+      localStorage.setItem('user', genericFetch('users?email=' + data.username))
       navigate('/')
     },
     onError: (error) => {
@@ -120,7 +120,6 @@ const LoginForm = () => {
       </CardContent>
       <CardFooter>
         <Button type="submit">{ isPending ? "Logging..." : "Log in" }</Button>
-        {user}
       </CardFooter>
       </form>
       </Form>

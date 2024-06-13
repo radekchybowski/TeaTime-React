@@ -1,4 +1,4 @@
-import { createBrowserRouter, Route, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Route, createRoutesFromElements, RouterProvider, useNavigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout'
 import HomePage from './pages/HomePage';
 import NotFound from './pages/NotFound';
@@ -36,6 +36,7 @@ const router = createBrowserRouter(
   )
 )
 const queryClient = new QueryClient(); // Initialize queryClient with a new instance of QueryClient
+
 export const AuthContext = createContext({
   auth: {
     user: false,

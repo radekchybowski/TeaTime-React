@@ -1,3 +1,4 @@
+import { AuthContext } from "@/App";
 import Alert from "@/components/blocks/Alert";
 import BrewingTile from "@/components/blocks/BrewingTile";
 import Comment from "@/components/blocks/Comment";
@@ -9,26 +10,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import genericFetch from "@/hooks/genericFetch";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useContext } from "react";
 import { FaBalanceScaleLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 
 
-const TeaPage = () => {
+export default function TeaPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { auth } = useContext(AuthContext);
   const { toast } = useToast();
   const { id } = useParams();
   const path = `teas/${id}`;
 
   const {data, isLoading} = useQuery({
-    queryFn: () => genericFetch({path: path}),
+    queryFn: () => genericFetch({path: path, token: auth.token}),
     queryKey: [path],
     cacheTime: 0
   });
 
   const deleteTea = () => {
     try {
-      genericFetch({ path: path, method: 'DELETE' });
+      genericFetch({ path: path, method: 'DELETE', token: auth.token });
       queryClient.invalidateQueries([])
       navigate('/')
       toast({
@@ -133,5 +136,3 @@ const TeaPage = () => {
     </div>
   );
 };
-
-export default TeaPage;

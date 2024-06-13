@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode";
 
 const loginFetch = async ({path = 'login', body}) => {
   let data; 
@@ -20,7 +21,8 @@ const loginFetch = async ({path = 'login', body}) => {
       })
       
       .then((json) => data = json)
-  return data;
+  localStorage.setItem('token', data.token)
+  return jwtDecode(data.token)
 }
 
 export default loginFetch;

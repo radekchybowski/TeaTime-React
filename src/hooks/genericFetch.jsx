@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 
-const genericFetch = async ({path, search, method = 'GET', body = null, pagination = null, token = null}) => {
+const genericFetch = async ({path, search, method = 'GET', body = null, pagination = null}) => {
+  const token = localStorage.getItem('token');
   let data; 
   path = path.replace('/api/', '')
 
@@ -14,12 +14,12 @@ const genericFetch = async ({path, search, method = 'GET', body = null, paginati
     path = path + separator + search;
   }
 
-  console.log(path)
   await fetch(`http://localhost:8000/api/${path}`, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        Authorization: 'Bearer ' + token,
       },
       body: body
     })
@@ -36,10 +36,4 @@ const genericFetch = async ({path, search, method = 'GET', body = null, paginati
   return data;
 }
 
-export default function useFetch ({path, search, method = 'GET', body = null, pagination = null}) {
-  return useQuery({
-  queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination}),
-  queryKey: [fetch, {searchQuery, pagination}],
-  // cacheTime: 0
-  });
-}
+export default genericFetch;

@@ -7,13 +7,13 @@ import { FaBookMedical, FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa
 import { BiSolidCategory } from "react-icons/bi";
 import { MdCollectionsBookmark } from "react-icons/md";
 import { Tile } from '../ui/tile';
-import { UserContext } from '@/App';
+import { AuthContext } from '@/App';
 import { useQuery } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
 
 const NavPane = ({className}) => {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext);
+  const user = localStorage.getItem('user');
 
   const {data: collections, isLoading} = useQuery({
     queryFn: () => genericFetch({path: `tealists`, search: `author.id=${user}`}),
@@ -28,7 +28,6 @@ const NavPane = ({className}) => {
             <AvatarImage src="img/teaCard-bg.jpg" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          {user}
           <div className='flex'>
             <Button asChild size="icon" variant="ghost">
               <NavLink to="search">
