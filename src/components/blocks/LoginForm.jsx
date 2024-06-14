@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { set, useForm } from "react-hook-form"
 import { z } from "zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 
 import {
@@ -29,6 +29,7 @@ import { useContext } from "react"
 import { AuthContext } from "@/App"
 import loginFetch from "@/hooks/loginFetch"
 import genericFetch from "@/hooks/genericFetch"
+import Cookies from "js-cookie"
 
 
 
@@ -36,12 +37,12 @@ const LoginForm = () => {
 
   const navigate = useNavigate()
   const { toast } = useToast();
-  const { auth, setAuth } = useContext(AuthContext);
+
 
   const { mutateAsync: loginMutation, isPending } = useMutation({
     mutationFn: loginFetch,
     onSuccess: (data) => {
-      localStorage.setItem('user', genericFetch('users?email=' + data.username))
+      localStorage.setItem('user', data)
       navigate('/')
     },
     onError: (error) => {

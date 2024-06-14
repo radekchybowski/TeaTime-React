@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {NavLink, useNavigate} from "react-router-dom";
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -7,13 +7,41 @@ import { FaBookMedical, FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa
 import { BiSolidCategory } from "react-icons/bi";
 import { MdCollectionsBookmark } from "react-icons/md";
 import { Tile } from '../ui/tile';
-import { AuthContext } from '@/App';
 import { useQuery } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import Cookies from 'js-cookie';
 
 const NavPane = ({className}) => {
   const navigate = useNavigate();
-  const user = localStorage.getItem('user');
+  const userPath = `users?email=${localStorage.getItem('user')}`;
+  // const userFetch = () => {
+  //   const user = localStorage.getItem('user');
+  //   const token = Cookies.get('token');
+  //   return fetch(`http://localhost:8000/api/users?email=${user}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Accept': 'application/json',
+  //       Authorization: 'Bearer ' + token,
+  //     },
+  //   })
+  //     .then(response => response.json())
+  //     .catch(error => {
+  //       console.error('Error:', error);
+  //     });
+  // }
+
+  const {data: user} = useQuery({
+    queryFn: () => genericFetch(userPath),
+    queryKey: [`user`],
+    cacheTime: 0
+  });
+
+  useEffect(() => {
+    console.log(user)
+  },[user])
+  
 
   const {data: collections, isLoading} = useQuery({
     queryFn: () => genericFetch({path: `tealists`, search: `author.id=${user}`}),
@@ -21,13 +49,29 @@ const NavPane = ({className}) => {
     cacheTime: 0
   });
 
+  const logout = () => {
+    Cookies.remove('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  }
+
     return (
       <header className={`flex flex-col h-screen w-full sm:w-auto min-w-92 m-1 p-2.5 gap-2.5 rounded-md bg-container ${className}`}>
         <div className='flex justify-between'>
-          <Avatar>
-            <AvatarImage src="img/teaCard-bg.jpg" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+        <DropdownMenu className="relative">
+          <DropdownMenuTrigger asChild>
+            <Avatar className="cursor-pointer">
+              <AvatarImage src="img/teaCard-bg.jpg" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="absolute top-0 left-0">
+            <DropdownMenuItem>Change name</DropdownMenuItem>
+            <DropdownMenuItem onClick={logout} className="text-destructive">Log out</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+          
+          {user?.id}
           <div className='flex'>
             <Button asChild size="icon" variant="ghost">
               <NavLink to="search">

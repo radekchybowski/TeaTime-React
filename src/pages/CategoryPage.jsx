@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 const CategoryPage = () => {
   const { id } = useParams();
   return (
-    <Section fetch={`teas?category.id=${id}`} component='teas'/>
+    <Section fetch={`teas?category.id=${id}`} items={20} component='teas'/>
   );
 };
 

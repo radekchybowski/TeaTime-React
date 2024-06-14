@@ -11,6 +11,16 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+
 const tileVariants = cva(
   "flex-1 inline-flex items-center justify-center relative whitespace-nowrap max-w-60 min-w-36 rounded-lg text-h4 font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ",
   {
@@ -32,13 +42,22 @@ const Tile = React.forwardRef(
   ({ className, variant, content, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "tile";
     return (
-      <Comp
-        className={cn(tileVariants({ variant, className }))}
-        ref={ref}
+      <DropdownMenu className="relative">
         
-      >{children}
-      <Button variant="ghost" size="sm" className="absolute top-0 right-0 m-1.5"><BsThreeDots /></Button>
+          <Comp
+          className={cn(tileVariants({ variant, className }))}
+          ref={ref}
+          
+        >{children}
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="absolute top-0 right-0 m-1.5"><BsThreeDots /></Button>
+        </DropdownMenuTrigger>
       </Comp>
+        <DropdownMenuContent className="absolute top-0 left-0">
+          <DropdownMenuItem>Change name</DropdownMenuItem>
+          <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 );

@@ -9,13 +9,14 @@ import {
 } from "../components/ui/tabs"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 
 export default function LoginPage() {
 const navigate = useNavigate();
 
 useEffect(() => {
-  if(localStorage.getItem('token')) {
+  if(Cookies.get('token')) {
     navigate('/')
   }
 },[])

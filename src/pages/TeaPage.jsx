@@ -12,7 +12,8 @@ import genericFetch from "@/hooks/genericFetch";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import { FaBalanceScaleLeft } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { FaRegStarHalfStroke, FaStarAndCrescent } from "react-icons/fa6";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 
 export default function TeaPage() {
@@ -24,14 +25,14 @@ export default function TeaPage() {
   const path = `teas/${id}`;
 
   const {data, isLoading} = useQuery({
-    queryFn: () => genericFetch({path: path, token: auth.token}),
+    queryFn: () => genericFetch({path: path}),
     queryKey: [path],
     cacheTime: 0
   });
 
   const deleteTea = () => {
     try {
-      genericFetch({ path: path, method: 'DELETE', token: auth.token });
+      genericFetch({ path: path, method: 'DELETE'});
       queryClient.invalidateQueries([])
       navigate('/')
       toast({
@@ -53,20 +54,20 @@ export default function TeaPage() {
       <ContentHeader 
         image="../img/tea-placeholder.jpg" 
         title={data?.title}
-        second={data?.category.title}
-        third={<Rating />}
+        second={<Link to={`/categories/${data?.category.id}`}>{data?.category.title}</Link>}
+        third={<Rating>{data?.currentRating}</Rating>}
       >
           <Button variant="outline" size="icon">Edit</Button>
           <Button variant="outline" size="icon">Edit</Button>
-          <Button variant="outline" size="icon">Edit</Button>
+          <Button variant="outline" size="icon"><FaRegStarHalfStroke /></Button>
           <Button variant="outline">Edit</Button>
           <Alert
             title="Are you absolutely sure?"
             description="You are going to delete tea. This action cannot be undone."
             actionButton={<Button onClick={() => {deleteTea()}} variant="destructive">Delete tea</Button>}
           >
-            <Button variant="warning">Delete</Button></Alert>
-          
+            <Button variant="warning">Delete</Button>
+          </Alert>
       </ContentHeader>
       <InnerContainer>
         <h3>Description</h3>

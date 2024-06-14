@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster"
+import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom"
 
@@ -6,7 +7,7 @@ function RootLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(!localStorage.getItem('token')) {
+    if(!Cookies.get('token')) {
       navigate('/login')
     }
   },[])

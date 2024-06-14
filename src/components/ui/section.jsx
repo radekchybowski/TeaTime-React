@@ -40,7 +40,8 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
   });
 
   useEffect(() => {
-
+    if (data?.length === 0) setContent(<ErrorPane description="No teas found"/>)
+    if (data?.length <= pagination) setShowMore(true)
     const content = data?.map((entity) => {
       
       if('categories' == component) return <CategoryTile key={entity.id} properties={entity} image="img/tea-placeholder.jpg"/>

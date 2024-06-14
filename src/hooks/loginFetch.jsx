@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 const loginFetch = async ({path = 'login', body}) => {
@@ -21,8 +22,11 @@ const loginFetch = async ({path = 'login', body}) => {
       })
       
       .then((json) => data = json)
-  localStorage.setItem('token', data.token)
-  return jwtDecode(data.token)
+      Cookies.set("token", data.token, { expires: 1/24, path: "/" });
+      const user = jwtDecode(data.token)
+      console.log(user.username)
+      return user.username
 }
+
 
 export default loginFetch;
