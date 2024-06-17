@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import Cookies from 'js-cookie';
+import CategoryTile from './CategoryTile';
 
 const NavPane = ({className}) => {
   const navigate = useNavigate();
@@ -32,19 +33,19 @@ const NavPane = ({className}) => {
   //     });
   // }
 
-  const {data: user} = useQuery({
-    queryFn: () => genericFetch(userPath),
-    queryKey: [`user`],
-    cacheTime: 0
-  });
+  // const {data: user} = useQuery({
+  //   queryFn: () => genericFetch(userPath),
+  //   queryKey: [`user`],
+  //   cacheTime: 0
+  // });
 
-  useEffect(() => {
-    console.log(user)
-  },[user])
+  // useEffect(() => {
+  //   console.log(user)
+  // },[user])
   
 
-  const {data: collections, isLoading} = useQuery({
-    queryFn: () => genericFetch({path: `tealists`, search: `author.id=${user}`}),
+  const {data: categories, isLoading} = useQuery({
+    queryFn: () => genericFetch({path: `categories`}),
     queryKey: [`tealists`],
     cacheTime: 0
   });
@@ -70,8 +71,6 @@ const NavPane = ({className}) => {
             <DropdownMenuItem onClick={logout} className="text-destructive">Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-          
-          {user?.id}
           <div className='flex'>
             <Button asChild size="icon" variant="ghost">
               <NavLink to="search">
@@ -93,37 +92,27 @@ const NavPane = ({className}) => {
             </div>
           </div>
         </div>
-
         <Button asChild variant="nav">
           <NavLink to="/">
             <FaHouse /> Home
           </NavLink>
         </Button>
-        <div className='grid grid-flow-col gap-2.5 justify-stretch w-full'>
-          <Button asChild variant="nav">
-            <NavLink to="categories">
-              <BiSolidCategory /> Categories
-            </NavLink>
-          </Button>
-          <Button asChild variant="nav">
-            <NavLink to="library">
-            <FaBookMedical /> My library
-            </NavLink>
-          </Button>
-        </div>
+        <Button asChild variant="nav">
+          <NavLink to="library">
+          <FaBookMedical /> My library
+          </NavLink>
+        </Button>
+        
 
         <div className={'flex flex-1 h-1/5 flex-col pt-0 p-4 gap-2.5 rounded-md bg-card'}>
-          <div className='flex justify-between items-center w-full'>
-            <Button asChild className="p-0 text-outline-foreground" variant="nav">
-              <NavLink to="collections">
-                <MdCollectionsBookmark />Collections
+        <Button asChild className="p-0 mt-1 text-outline-foreground flex-0" variant="nav">
+              <NavLink to="categories">
+                <BiSolidCategory /> Categories
               </NavLink>
             </Button>
-            <Button className="h-fit" variant="outline" size="sm"><FaPlus /></Button>
-          </div>
           <div className='w-full overflow-scroll rounded-md grid grid-cols-2 gap-2.5'>
-            {collections?.map(
-              collection => <Tile key={collection.id}>{collection.title}</Tile>
+            {categories?.map(
+              category => <CategoryTile key={category.id} properties={category}>{category.title}</CategoryTile>
               )
             }
           </div>

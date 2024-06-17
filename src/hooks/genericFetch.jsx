@@ -13,6 +13,7 @@ const genericFetch = ({path, search, method = 'GET', body = null, pagination = n
     let separator = path.includes('?') ? '&' : '?';
     path = path + separator + search;
   }
+  console.log(path)
 
   return fetch(`http://localhost:8000/api/${path}`, {
       method: method,
