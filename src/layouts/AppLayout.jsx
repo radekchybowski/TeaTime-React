@@ -1,25 +1,41 @@
+import { AuthContext } from "@/App"
 import MobileNavButton from "@/components/blocks/MobileNavButton"
 import NavPane from "@/components/blocks/NavPane"
 import Container from "@/components/ui/container"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { toast } from "@/components/ui/use-toast"
 import genericFetch from "@/hooks/genericFetch"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode"
-import { useEffect } from "react"
+import { useContext, useEffect, useLayoutEffect } from "react"
 import { NavLink, Outlet } from "react-router-dom"
 
 function AppLayout() {
-  // const {data: user, isFetched} = useQuery({
-  //   queryFn: () => genericFetch({path: `users?email=${localStorage.getItem('user')}`}),
-  //   queryKey: [`user`],
-  //   cacheTime: 0
-  // });
 
-  // useEffect(() => {
-  //   localStorage.setItem('userData', user[0])
-  //   console.log(user)
-  // },[isFetched])
+  const authContext = useContext(AuthContext)
+
+  const { mutateAsync: userMutation, isPending } = useMutation({
+    mutationFn: genericFetch,
+    onSuccess: (data) => {
+      authContext.setAuth({...authContext.auth, user: data[0]})
+    },
+    onError: (error) => {
+      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: error.message,
+      })
+    }
+  })
+
+  useLayoutEffect(() => {
+    if(localStorage.getItem('user') ) {
+      userMutation({path: `users?email=${localStorage.getItem('user')}`})
+      console.log(authContext.auth.user)
+    }
+  },[])
 
   return (
       <ResizablePanelGroup className="" direction="horizontal">
