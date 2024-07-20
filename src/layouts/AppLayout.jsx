@@ -18,6 +18,7 @@ function AppLayout() {
   const { mutateAsync: userMutation, isPending } = useMutation({
     mutationFn: genericFetch,
     onSuccess: (data) => {
+      console.log("Fetch:", data[0])
       authContext.setAuth({...authContext.auth, user: data[0]})
     },
     onError: (error) => {
@@ -31,11 +32,15 @@ function AppLayout() {
   })
 
   useLayoutEffect(() => {
-    if(localStorage.getItem('user') ) {
-      userMutation({path: `users?email=${localStorage.getItem('user')}`})
+    if(localStorage.getItem('user')) {
+      const user = jwtDecode(Cookies.get('token'))
+      console.log(user.username)
+      userMutation({path: `users?email=${user.username}`})
       console.log(authContext.auth.user)
     }
   },[])
+
+  
 
   return (
       <ResizablePanelGroup className="" direction="horizontal">

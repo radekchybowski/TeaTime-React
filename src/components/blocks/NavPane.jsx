@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { memo, useContext, useEffect } from 'react';
 import {NavLink, useNavigate} from "react-router-dom";
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -12,37 +12,12 @@ import genericFetch from '@/hooks/genericFetch';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import Cookies from 'js-cookie';
 import CategoryTile from './CategoryTile';
+import { AuthContext } from '@/App';
 
 const NavPane = ({className}) => {
   const navigate = useNavigate();
-  const userPath = `users?email=${localStorage.getItem('user')}`;
-  // const userFetch = () => {
-  //   const user = localStorage.getItem('user');
-  //   const token = Cookies.get('token');
-  //   return fetch(`http://localhost:8000/api/users?email=${user}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //       Authorization: 'Bearer ' + token,
-  //     },
-  //   })
-  //     .then(response => response.json())
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //     });
-  // }
-
-  // const {data: user} = useQuery({
-  //   queryFn: () => genericFetch(userPath),
-  //   queryKey: [`user`],
-  //   cacheTime: 0
-  // });
-
-  // useEffect(() => {
-  //   console.log(user)
-  // },[user])
-  
+  const authContext = useContext(AuthContext);
+  const user = authContext.auth.user;
 
   const {data: categories, isLoading} = useQuery({
     queryFn: () => genericFetch({path: `categories`}),
@@ -67,6 +42,7 @@ const NavPane = ({className}) => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="absolute top-0 left-0">
+            <DropdownMenuItem>{user.name} {user.surname}</DropdownMenuItem>
             <DropdownMenuItem>Change name</DropdownMenuItem>
             <DropdownMenuItem onClick={logout} className="text-destructive">Log out</DropdownMenuItem>
           </DropdownMenuContent>
@@ -121,4 +97,4 @@ const NavPane = ({className}) => {
     );
 };
 
-export default NavPane;
+export default memo(NavPane);
