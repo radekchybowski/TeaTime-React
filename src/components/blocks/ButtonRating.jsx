@@ -16,20 +16,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "@/App";
 
 
 
 export default function ButtonRating({teaId, userId}) {
+  const authContext = useContext(AuthContext);
+  const user = authContext.auth.user;
+
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState(0);
   
-  const {data: rating, isLoading} = useQuery({
-    queryFn: () => genericFetch({path: 'ratings', search: `tea.id=${teaId}&author.id=${userId}`}),
+  const {data: rating, isFetching, isFetched} = useQuery({
+    queryFn: () => genericFetch({path: 'ratings', search: `tea.id=${teaId}&author.id=${user.id}`}),
     queryKey: ['rating'],
+    enabled: !!user,
     cacheTime: 0
   });
-
 
   const {mutateAsync: ratingMutation} = useMutation({
     mutationFn: genericFetch,
@@ -42,15 +46,24 @@ export default function ButtonRating({teaId, userId}) {
 
   const handleSelectChange = (value) => {
     setSelected(value)
+    let method = 'POST'
+    let path = 'ratings'
+
+    if(rating.length) {
+      method = 'PUT'
+      path = `ratings/${rating[0].id}`
+    }
+
     const body = JSON.stringify({
       rating: value, 
       tea: `api/teas/${teaId}`, 
       author: `api/users/${userId}`
     })
+
     ratingMutation({
-      path: 'ratings', 
-      method: 'POST', 
-      body: body,
+      path: path, 
+      method: method, 
+      body: body
     })
   }
 
@@ -58,7 +71,7 @@ export default function ButtonRating({teaId, userId}) {
       <Popover>
         <PopoverTrigger>
           <Button variant="outline" size="icon">
-            {rating?.rating ? rating?.rating : <FaRegStarHalfStroke />}
+            {rating ? rating.length ?rating[0].rating : <FaRegStarHalfStroke /> : <FaRegStarHalfStroke />}
           </Button>
         </PopoverTrigger>
         <PopoverContent>

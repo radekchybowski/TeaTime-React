@@ -18,28 +18,24 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function TeaPage() {
   const navigate = useNavigate();
+
   const queryClient = useQueryClient();
+  const authContext = useContext(AuthContext);
+  const user = authContext.auth.user;
+  
   const { toast } = useToast();
   const { id } = useParams();
-  const path = `teas/${id}`;
+  const teaPath = `teas/${id}`;
 
   const {data: tea, isLoading: isTeaLoading} = useQuery({
-    queryFn: () => genericFetch({path: path}),
-    queryKey: [path],
+    queryFn: () => genericFetch({path: teaPath}),
+    queryKey: [teaPath],
     cacheTime: 0
   });
-
-  const {data: user, isFetched: isUserFetched } = useQuery({
-    queryFn: () => genericFetch({path: 'users', search: `email=${localStorage.getItem('user')}`}),
-    queryKey: ['userTea'],
-    cacheTime: 0
-  });
-
-
 
   const deleteTea = () => {
     try {
-      genericFetch({ path: path, method: 'DELETE'});
+      genericFetch({ path: teaPath, method: 'DELETE'});
       queryClient.invalidateQueries([])
       navigate('/')
       toast({
@@ -53,7 +49,6 @@ export default function TeaPage() {
       })
     }
   }
-  useEffect(() => {console.log(user)}, [user])
 
   return (
     <div className="flex flex-col w-full gap-4">
@@ -66,8 +61,8 @@ export default function TeaPage() {
       >
           <Button variant="outline" size="icon">Edit</Button>
           <Button variant="outline" size="icon">Edit</Button>
-          {isUserFetched && !isTeaLoading && <ButtonRating teaId={tea?.id} userId={user[0].id}/>}
-          { localStorage.getItem('user') === tea?.author.email && 
+          <ButtonRating teaId={ id } userId={ user.id }/>
+          { user.id === tea?.author.id && 
             <>
               <Button variant="outline">Edit</Button>
               <Alert
