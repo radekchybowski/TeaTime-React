@@ -3,6 +3,7 @@ import Alert from "@/components/blocks/Alert";
 import BrewingTile from "@/components/blocks/BrewingTile";
 import ButtonRating from "@/components/blocks/ButtonRating";
 import Comment from "@/components/blocks/Comment";
+import CommentsWidget from "@/components/blocks/CommentsWidget";
 import ContentHeader from "@/components/blocks/ContentHeader";
 import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
@@ -131,17 +132,8 @@ export default function TeaPage() {
       </InnerContainer>
       <InnerContainer>
         <h3>Comments</h3>
-        {tea?.comments.map(comment => (
-          <Comment key={comment.id}
-            content={comment.content}
-            nickname={comment.author.name + " " + comment.author.surname}
-            date={comment.createdAt}
-          />
-        ))}
-        <Textarea placeholder="Type your message here..."/>
-        <Button className="w-fit">Save</Button>
+        {tea && <CommentsWidget tea={tea}/>}
       </InnerContainer>
-
     </div>
   );
 };

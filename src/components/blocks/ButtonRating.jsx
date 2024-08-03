@@ -37,28 +37,35 @@ export default function ButtonRating({teaId, userId}) {
 
   const {mutateAsync: ratingMutation} = useMutation({
     mutationFn: genericFetch,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(['rating'])
-      console.log('success')
+      console.log('success', data)
     },
     onError: (error) => console.error(error)
   })
 
   const handleSelectChange = (value) => {
     setSelected(value)
+
     let method = 'POST'
     let path = 'ratings'
 
-    if(rating.length) {
-      method = 'PUT'
-      path = `ratings/${rating[0].id}`
-    }
-
-    const body = JSON.stringify({
+    let body = JSON.stringify({
       rating: value, 
       tea: `api/teas/${teaId}`, 
       author: `api/users/${userId}`
     })
+
+    if(rating.length && value === null) {
+      method = 'DELETE'
+      path = `ratings/${rating[0].id}`
+      body = null
+    }
+
+    if(rating.length && value !== null) {
+      method = 'PUT'
+      path = `ratings/${rating[0].id}`
+    }
 
     ratingMutation({
       path: path, 
@@ -80,6 +87,7 @@ export default function ButtonRating({teaId, userId}) {
               <SelectValue placeholder="Rate this tea" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={null}>Not rated</SelectItem>
               <SelectItem value={1}>{1}</SelectItem>
               <SelectItem value={2}>{2}</SelectItem>
               <SelectItem value={3}>{3}</SelectItem>
@@ -90,6 +98,7 @@ export default function ButtonRating({teaId, userId}) {
               <SelectItem value={8}>{8}</SelectItem>
               <SelectItem value={9}>{9}</SelectItem>
               <SelectItem value={10}>{10}</SelectItem>
+              {/* <SelectItem value={10}>{rating && rating[0].id}</SelectItem> */}
             </SelectContent>
           </Select>
         </PopoverContent>
