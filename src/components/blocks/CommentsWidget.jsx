@@ -63,6 +63,7 @@ const CommentsWidget = ({tea}) => {
       author: `api/users/${user.id}`
     })
     addCommentMutation({path: 'comments', method: 'POST', body: body})
+    form.resetField("content")
   };
 
   return (

@@ -10,20 +10,24 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { AuthContext } from "@/App";
 import { useContext } from "react";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import genericFetch from "@/hooks/genericFetch";
 import { toast } from "../ui/use-toast";
+import deleteFetch from "@/hooks/deleteFetch";
 
 const Comment = ({commentId, authorId, nickname, content, date, className}) => {
   const formattedDate = new Date(date);
   const authContext = useContext(AuthContext);
+  const queryClient = useQueryClient();
   const user = authContext.auth.user;
 
   const { mutateAsync: deleteCommentMutation, isPending } = useMutation({
-    mutationFn: genericFetch,
-    onSuccess: (data) => {
-      QueryClient.invalidateQueries([''])
-      console.log('success', data)
+    mutationFn: deleteFetch,
+    onSuccess: () => {
+      queryClient.invalidateQueries([''])
+      toast({
+        title: "Comment has been deleted."
+      })
     },
     onError: (error) => {
       console.log(error)
@@ -36,10 +40,8 @@ const Comment = ({commentId, authorId, nickname, content, date, className}) => {
   })
 
   const handleDelete = () => {
-    deleteCommentMutation({
-      path: `comments/${commentId}`, 
-      method: 'DELETE'
-    })
+    deleteCommentMutation(`comments/${commentId}`)
+    console.log(`comments/${commentId}`)
   }
 
   return (
