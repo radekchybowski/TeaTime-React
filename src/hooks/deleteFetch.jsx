@@ -13,7 +13,10 @@ const deleteFetch = (path) => {
     })
     .then((response) => {
       if (!response.ok) {
-        console.log(response.status)
+        if (response.status === 401) {
+          Cookies.remove('token');
+          localStorage.removeItem('user');
+        }
         if(response.status === 404) {
           throw new Error('Error has occurred: this comment does not exist in database, so it cannot be deleted.')
         }

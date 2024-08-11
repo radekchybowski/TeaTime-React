@@ -5,6 +5,7 @@ import ButtonRating from "@/components/blocks/ButtonRating";
 import Comment from "@/components/blocks/Comment";
 import CommentsWidget from "@/components/blocks/CommentsWidget";
 import ContentHeader from "@/components/blocks/ContentHeader";
+import NotesWidget from "@/components/blocks/NotesWidget";
 import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import Rating from "@/components/ui/rating";
@@ -127,8 +128,7 @@ export default function TeaPage() {
       </InnerContainer>
       <InnerContainer>
         <h3>Your notes</h3>
-        <Textarea/>
-        <Button className="w-fit">Save</Button>
+        <NotesWidget tea={tea}/>
       </InnerContainer>
       <InnerContainer>
         <h3>Comments</h3>
