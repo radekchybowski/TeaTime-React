@@ -26,6 +26,7 @@ import {
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useToast } from "../ui/use-toast"
+import registerFetch from "@/hooks/registerFetch"
 
 
 
@@ -34,11 +35,16 @@ const RegisterForm = () => {
   const navigate = useNavigate()
   const { toast } = useToast();
 
-  const { mutateAsync: loginMutation, isFetching } = useMutation({
-    mutationFn: genericFetch,
-    onSuccess: () => {
-      console.log('success')
-      navigate('/')
+  const { mutateAsync: registerMutation, isFetching } = useMutation({
+    mutationFn: registerFetch,
+    onSuccess: (data) => {
+      console.log('success', data)
+      toast({
+        variant: "primary",
+        title: "Success!",
+        description: 'You are now registered.',
+      })
+      navigate(0)
     },
     onError: (error) => {
       console.log(error)
@@ -55,6 +61,14 @@ const RegisterForm = () => {
       .min(1, { message: "Please enter something" })
       .email("This is not a valid email."),
 
+    name: z.string()
+      .max(255, { message: "That's too long." })
+      .optional(),
+
+    surname: z.string()
+      .max(255, { message: "That's too long." })
+      .optional(),
+
     password: z.string()
       .min(6, { message: "We need at least 6 characters buddy." }),
 
@@ -62,12 +76,22 @@ const RegisterForm = () => {
       .min(6, { message: "We need at least 6 characters buddy." })
       // .refine((value, { form }) => value === form.password, {
       //   message: "Passwords do not match.",
-      // }),
+      // })
+  }).superRefine(({ repeatPassword, password }, ctx) => {
+    if (repeatPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The passwords did not match.",
+        path: ['repeatPassword']
+      });
+    }
   });
 
   const form = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
+      surname: "",
       email: "",
       password: "",
       repeatPassword: "",
@@ -77,8 +101,15 @@ const RegisterForm = () => {
   
 
   const onSubmit = (values) => {
-    const body = JSON.stringify(values)
-    loginMutation({path: 'login', method: 'POST', body: body})
+    const body = JSON.stringify(
+      {
+        email: values.email,
+        password: values.password,
+        name: values.name || null,
+        surname: values.surname || null
+      }
+    )
+    registerMutation({body: body})
   };
 
   return (
@@ -99,12 +130,42 @@ const RegisterForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="name123@example.com" {...field} />
+                <Input type="email" placeholder="name123@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+        <div className="flex gap-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="min-w-1">
+                <FormLabel>First name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Steven" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            class="w-50"
+            control={form.control}
+            name="surname"
+            render={({ field }) => (
+              <FormItem className="min-w-1">
+                <FormLabel>Last name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Buffet" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        
         <FormField
           control={form.control}
           name="password"

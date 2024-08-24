@@ -14,9 +14,8 @@ const loginFetch = async ({path = 'login', body}) => {
     })
       .then(response => {
         if (!response.ok) {
-          console.log(response.status)
           return response.json()
-          .then(body => {throw new Error('Error has occurred: ' + body.error)})
+          .then(body => {throw new Error(body.message)})
         }
         return response.json()
       })
@@ -24,7 +23,6 @@ const loginFetch = async ({path = 'login', body}) => {
       .then((json) => data = json)
       Cookies.set("token", data.token, { expires: 1/24, path: "/" });
       const user = jwtDecode(data.token)
-      console.log(user.username)
       return user.username
 }
 

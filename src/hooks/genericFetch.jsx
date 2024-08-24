@@ -28,9 +28,10 @@ const genericFetch = ({path, search, method = 'GET', body = null, pagination = n
         if (response.status === 401) {
           Cookies.remove('token');
           localStorage.removeItem('user');
+
         }
         if (!response.ok) {
-          console.log(response.status)
+          console.log(response)
           .then(body => {throw new Error('Error has occurred: ' + body.error)})
         }
         return response.json()
