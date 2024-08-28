@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/select"
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/App";
+import deleteFetch from "@/hooks/deleteFetch";
+import { toast } from "../ui/use-toast";
 
 
 
@@ -37,11 +39,38 @@ export default function ButtonRating({teaId, userId}) {
 
   const {mutateAsync: ratingMutation} = useMutation({
     mutationFn: genericFetch,
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['rating'])
-      console.log('success', data)
+      toast({
+        title: "Rating has been changed."
+      })
     },
-    onError: (error) => console.error(error)
+    onError: (error) => {
+      console.error(error)
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: error.message,
+      })
+    }
+  })
+
+  const {mutateAsync: ratingDeleteMutation} = useMutation({
+    mutationFn: deleteFetch,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['rating'])
+      toast({
+        title: "Rating has been deleted."
+      })
+    },
+    onError: (error) => {
+      console.error(error)
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: error.message,
+      })
+    }
   })
 
   const handleSelectChange = (value) => {
@@ -57,9 +86,9 @@ export default function ButtonRating({teaId, userId}) {
     })
 
     if(rating.length && value === null) {
-      method = 'DELETE'
       path = `ratings/${rating[0].id}`
-      body = null
+      ratingDeleteMutation(path)
+      return;
     }
 
     if(rating.length && value !== null) {
