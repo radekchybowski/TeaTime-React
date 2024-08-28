@@ -46,7 +46,7 @@ export default function TeaPage() {
     try {
       genericFetch({ path: teaPath, method: 'DELETE'});
       queryClient.invalidateQueries([])
-      navigate('/')
+      navigate(-1)
       toast({
         title: `Tea ${tea?.title} has been deleted`,
       })

@@ -59,7 +59,7 @@ export function EditTeaPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['teas'])
       console.log('success')
-      navigate('/')
+      navigate(-1)
     },
     onError: (error) => console.error(error)
   })
@@ -89,7 +89,7 @@ export function EditTeaPage() {
     resolver: zodResolver(addTeaSchema),
     values: {
       title: teaData?.title,
-      category: teaData?.category.id,
+      category: `api/categories/${teaData?.category.id}`,
       description: teaData?.description,
       ingredients: teaData?.ingredients,
       steepTime: teaData?.steepTime,
@@ -113,10 +113,10 @@ export function EditTeaPage() {
     <div className="flex flex-col w-full gap-4">
               
       <ContentHeader 
-        title="Add new tea"
+        title="Edit your tea"
       >
           <Button onClick={() => navigate(-1)} variant="outline">Cancel</Button>
-          <Button>Save tea</Button>
+          <Button>Save changes</Button>
       </ContentHeader>
 
       <InnerContainer>
@@ -142,10 +142,10 @@ export function EditTeaPage() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select  onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category (kind)" />
+                    <SelectValue placeholder={teaData?.category.title} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
