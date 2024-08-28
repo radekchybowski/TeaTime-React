@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
 import ErrorPane from '../blocks/ErrorPane';
 import { AuthContext } from '@/App';
@@ -33,14 +33,22 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
   const [showMore, setShowMore] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const { auth } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
-  const {data, isLoading, error, isError} = useQuery({
+  const {data, isLoading, error, isError, isSuccess} = useQuery({
     queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination}),
-    queryKey: [fetch, {searchQuery, pagination}],
-    // cacheTime: 0
+    queryKey: [fetch, searchQuery, pagination],
+    onSuccess: () => {
+      // console.log(pagination)
+      console.log('showMore:', showMore)
+    },
+    cacheTime: 0
   });
 
   useEffect(() => {
+    console.log('isSuccess:', isSuccess)
+    console.log('pag:', pagination)
+    console.log('showMore:', showMore)
     if (isError) {
       setContent(<ErrorPane/>)
       return
@@ -63,7 +71,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
     })
     setContent(content)
   }
-  ,[data])
+  ,[isSuccess])
 
   const searchSchema = z.object({
     search: z.string().min(1, {
@@ -93,13 +101,16 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
     } else {
       setPagination(items * 2)
       setLoadMore(true)
+      queryClient.invalidateQueries([fetch])
     }
     if(pagination > data.length) setLoadMore(false)
   }
 
   const clickLoadMore = () => {
-    if(!(pagination > data.length)) 
+    if(pagination < data.length) {
       setPagination(pagination + items)
+      queryClient.invalidateQueries([fetch])
+    }
     else setLoadMore(false)
   }
 
@@ -132,7 +143,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
           )}
           <Button onClick={() => setShowForm(!showForm)} variant="ghost" size="sm"><FaMagnifyingGlass/></Button>
           <Button onClick={clickShowMore} variant="ghost" size="sm">
-            { showMore ? 'Show less' : 'Show more' }
+            {showMore ? 'Show less' : 'Show more'}
           </Button>
         </div>
       </div>
