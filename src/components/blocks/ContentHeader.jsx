@@ -1,5 +1,5 @@
 
-const ContentHeader = ({children, image, title, second, third}) => {
+const ContentHeader = ({children, image="img/tea-placeholder.jpg", title, second, third}) => {
   return (
     <>
       <header className="blurred-bg-img z-20 relative flex flex-wrap items-end w-full p-6 gap-4 rounded-md overflow-clip">

@@ -28,15 +28,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
 import { useContext, useEffect, useReducer } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "@/App";
 
-export function AddTeaPage() {
+export function EditTeaPage() {
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const user = authContext.auth.user;
+  const { id } = useParams();
 
   const categoryQuery = useQuery({
     queryFn: () => genericFetch({path: 'categories'}),
@@ -44,7 +45,16 @@ export function AddTeaPage() {
     // cacheTime: 0
   });
 
-  const {mutateAsync: addTeaMutation} = useMutation({
+  const {data: teaData, isFetchedAfterMount: teaFetched} = useQuery({
+    queryFn: () => genericFetch({path: `teas/${id}`}),
+    queryKey: ['teas'],
+    // cacheTime: 0
+    onSuccess: () => {
+      console.log(teaData.category);
+    }
+  });
+
+  const {mutateAsync: editTeaMutation} = useMutation({
     mutationFn: genericFetch,
     onSuccess: () => {
       queryClient.invalidateQueries(['teas'])
@@ -77,22 +87,24 @@ export function AddTeaPage() {
 
   const form = useForm({
     resolver: zodResolver(addTeaSchema),
-    defaultValues: {
-      title: "",
+    values: {
+      title: teaData?.title,
+      category: teaData?.category.id,
+      description: teaData?.description,
+      ingredients: teaData?.ingredients,
+      steepTime: teaData?.steepTime,
+      steepTemp: teaData?.steepTemp,
+      region: teaData?.region,
+      vendor: teaData?.vendor,
+
     },
   })
  
   function addTeaSubmit(values) {
-    values = {...values, author: `api/users/${user.id}`}
     values = JSON.stringify(values)
-    addTeaMutation({path: 'teas', method: 'POST', body: values})
+    editTeaMutation({path: `teas/${teaData.id}`, method: 'PUT', body: values})
     console.log(values)
   }
-
-
-
-
-
 
   return (
     
@@ -100,7 +112,9 @@ export function AddTeaPage() {
     <form onSubmit={form.handleSubmit(addTeaSubmit)}>
     <div className="flex flex-col w-full gap-4">
               
-      <ContentHeader title="Add new tea">
+      <ContentHeader 
+        title="Add new tea"
+      >
           <Button onClick={() => navigate(-1)} variant="outline">Cancel</Button>
           <Button>Save tea</Button>
       </ContentHeader>
@@ -275,7 +289,7 @@ export function AddTeaPage() {
     </form>
     </Form>
   );
-};
+}
 
-export default AddTeaPage;
+export default EditTeaPage;
 

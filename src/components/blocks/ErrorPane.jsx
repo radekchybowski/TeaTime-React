@@ -1,12 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
-const ErrorPane = ({title="It looks like something went wrong :(", description=""}) => {
+const ErrorPane = ({title="It looks like something went wrong :(", description="No content found", button=null}) => {
+  const navigate = useNavigate();
+  button = button ?? <Button onClick={() => navigate(0)} className="text-center">Refresh the page</Button>
   return (
-    <div className="flex flex-col w-full justify-center items-center h-96 rounded-lg bg-card p-5 gap-2">
+    <div className="flex flex-col w-full justify-center items-center h-96 rounded-lg bg-card p-5 gap-2 text-center">
       <h4>{title}</h4>
       <p>{description}</p>
-      <Button className="text-center" asChild><NavLink to="/">Refresh the page</NavLink></Button>
+      {button}
     </div>
   );
 };

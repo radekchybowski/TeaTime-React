@@ -29,11 +29,18 @@ export default function TeaPage() {
   const { id } = useParams();
   const teaPath = `teas/${id}`;
 
-  const {data: tea, isLoading: isTeaLoading} = useQuery({
+  const {data: tea, isLoading: isTeaLoading, isError} = useQuery({
     queryFn: () => genericFetch({path: teaPath}),
     queryKey: [teaPath],
-    cacheTime: 0
+    cacheTime: 0,
+    retry: false
   });
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/404")
+    }
+  },[isError]);
 
   const deleteTea = () => {
     try {
@@ -66,7 +73,7 @@ export default function TeaPage() {
           <ButtonRating teaId={ id } userId={ user.id }/>
           { user.id === tea?.author.id && 
             <>
-              <Button variant="outline">Edit</Button>
+              <Button variant="outline"><Link to={`/edit-tea/${tea?.id}`}>Edit</Link></Button>
               <Alert
                 title="Are you absolutely sure?"
                 description="You are going to delete tea. This action cannot be undone."
@@ -118,7 +125,7 @@ export default function TeaPage() {
         <h3>Tags</h3>
         <div className="flex flex-wrap gap-2.5">
           {tea?.tags.map(tag => (
-            <Button key={tag.id} className="bg-tile text-secondary-foreground hover:bg-tile/50" size="sm">{tag.title}</Button>
+            <Button key={tag?.id} className="bg-tile text-secondary-foreground hover:bg-tile/50" size="sm">{tag.title}</Button>
           ))}
           </div>
       </InnerContainer>

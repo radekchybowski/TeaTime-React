@@ -35,7 +35,7 @@ const RegisterForm = () => {
   const navigate = useNavigate()
   const { toast } = useToast();
 
-  const { mutateAsync: registerMutation, isFetching } = useMutation({
+  const { mutateAsync: registerMutation, isPending } = useMutation({
     mutationFn: registerFetch,
     onSuccess: (data) => {
       console.log('success', data)
@@ -197,7 +197,7 @@ const RegisterForm = () => {
         />
       </CardContent>
       <CardFooter>
-        <Button type="submit">{ isFetching ? "Logging..." : "Log in" }</Button>
+        <Button type="submit">{ isPending ? "Registering..." : "Register" }</Button>
       </CardFooter>
       </form>
       </Form>

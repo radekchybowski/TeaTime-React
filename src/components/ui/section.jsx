@@ -21,8 +21,9 @@ import { useQuery } from '@tanstack/react-query';
 import genericFetch from '@/hooks/genericFetch';
 import ErrorPane from '../blocks/ErrorPane';
 import { AuthContext } from '@/App';
+import { NavLink } from 'react-router-dom';
 
-const Section = ({title = null, fetch='teas', items=8, component, children, className}) => {
+const Section = ({title = null, fetch='teas', items=8, component, children, className, emptyError}) => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [content, setContent] = useState("");
@@ -33,14 +34,23 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
   const [loadMore, setLoadMore] = useState(false);
   const { auth } = useContext(AuthContext);
 
-  const {data, isLoading, error} = useQuery({
-    queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination, token: auth.token}),
+  const {data, isLoading, error, isError} = useQuery({
+    queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination}),
     queryKey: [fetch, {searchQuery, pagination}],
     // cacheTime: 0
   });
 
   useEffect(() => {
-    if (data?.length === 0) setContent(<ErrorPane description="No teas found"/>)
+    if (isError) {
+      setContent(<ErrorPane/>)
+      return
+    }
+    if (data?.length === 0) {
+      console.log(emptyError)
+      console.log(data?.length)
+      setContent(emptyError)
+      return
+    }
     if (data?.length <= pagination) setShowMore(true)
     const content = data?.map((entity) => {
       

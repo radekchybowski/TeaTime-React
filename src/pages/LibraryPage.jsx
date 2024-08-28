@@ -8,7 +8,7 @@ const LibraryPage = () => {
 
   return (
     <>
-      <Section title="My library" fetch={`teas?author.id=${user.id}`} component='teas'/>
+      <Section className="min-h-96" title="My library" fetch={`teas?author.id=${user.id}`} component='teas'/>
     </>
   );
 };

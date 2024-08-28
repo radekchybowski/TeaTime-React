@@ -1,7 +1,7 @@
 import { createBrowserRouter, Route, createRoutesFromElements, RouterProvider, useNavigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout'
 import HomePage from './pages/HomePage';
-import NotFound from './pages/NotFound';
+import NotFound from './pages/NotFoundPage';
 import NavPane from './components/blocks/NavPane';
 import CategoriesPage from './pages/CategoriesPage';
 import CollectionsPage from './pages/CollectionsPage';
@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import TeaPage from './pages/TeaPage';
 import CategoryPage from './pages/CategoryPage';
 import { createContext, useState } from 'react';
+import EditTeaPage from './pages/EditTeaPage';
 
 
 const router = createBrowserRouter(
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
         <Route path='search' element={ <SearchPage /> } />
         <Route path='teas/:id' element={ <TeaPage /> } />
         <Route path='add-tea' element={ <AddTeaPage /> } />
+        <Route path='edit-tea/:id' element={ <EditTeaPage /> } />
         <Route path='nav' element={ <NavPane /> } />
         <Route path='*' element={ <NotFound /> } />
       </Route>
