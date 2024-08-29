@@ -1,7 +1,9 @@
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const genericFetch = ({path, search, method = 'GET', body = null, pagination = null}) => {
   const token = Cookies.get('token');
+  // const navigate = useNavigate();
   path = path.replace('/api/', '')
 
   if (pagination) {
@@ -28,7 +30,7 @@ const genericFetch = ({path, search, method = 'GET', body = null, pagination = n
         if (response.status === 401) {
           Cookies.remove('token');
           localStorage.removeItem('user');
-
+          // navigate('/login')
         }
         if (!response.ok) {
           console.log(response)

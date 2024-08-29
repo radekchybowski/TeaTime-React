@@ -41,7 +41,6 @@ function AppLayout() {
   },[])
 
   
-
   return (
       <ResizablePanelGroup className="" direction="horizontal">
         <ResizablePanel className="min-w-96 max-w-[34rem] hidden sm:block">

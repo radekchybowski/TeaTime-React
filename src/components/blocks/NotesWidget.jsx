@@ -28,15 +28,20 @@ const NotesWidget = ({tea}) => {
   const { toast } = useToast();
 
   const {data: note, isLoading: isNoteLoading} = useQuery({
-    queryFn: () => genericFetch({path: `comments`, search: `tea=${tea.id}&title=note_widget`}),
+    queryFn: () => genericFetch({
+      path: `comments`, 
+      search: `tea=${tea.id}&author=${user.id}&title=note_widget`}),
     queryKey: ['note'],
-    cacheTime: 0
+    cacheTime: 0,
+    onSuccess: () => {
+      console.log('success notee')
+    }
   });
 
   const { mutateAsync: notesMutation, isPending } = useMutation({
     mutationFn: genericFetch,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['comments'])
+      queryClient.invalidateQueries(['note'])
       console.log('success', data)
     },
     onError: (error) => {
@@ -49,23 +54,23 @@ const NotesWidget = ({tea}) => {
     }
   })
 
-  const commentSchema = z.object({
+  const noteSchema = z.object({
     note: z.string()
       .min(1, { message: "Please enter something"})
   })
 
   const form = useForm({
-    resolver: zodResolver(commentSchema),
-    defaultValues: {
-      note: ""
+    resolver: zodResolver(noteSchema),
+    values: {
+      note: note?.content
     },
   })
 
   const onSubmit = (values) => {
-    console.log(values)
+    console.log(values.note)
     const body = JSON.stringify({
       title: 'note_widget',
-      content: values.content, 
+      content: values.note, 
       tea: `api/teas/${tea.id}`, 
       author: `api/users/${user.id}`
     })

@@ -11,7 +11,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card"
+} from "../components/ui/card"
 
 import {
   Form,
@@ -21,27 +21,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import { useToast } from "../ui/use-toast"
+} from "../components/ui/form"
+import { Input } from "../components/ui/input"
+import { Button } from "../components/ui/button"
+import { useToast } from "../components/ui/use-toast"
 import registerFetch from "@/hooks/registerFetch"
+import { AuthContext } from "@/App"
+import { useContext } from "react"
+import genericFetch from "@/hooks/genericFetch"
 
 
 
-const RegisterForm = () => {
+const SettingsPage = () => {
 
   const navigate = useNavigate()
+  const authContext = useContext(AuthContext);
+  const user = authContext.auth.user;
   const { toast } = useToast();
 
-  const { mutateAsync: registerMutation, isPending } = useMutation({
-    mutationFn: registerFetch,
+  const { mutateAsync: settingsMutation, isPending } = useMutation({
+    mutationFn: genericFetch,
     onSuccess: (data) => {
       console.log('success', data)
       toast({
         variant: "primary",
         title: "Success!",
-        description: 'You are now registered.',
+        description: 'You have updated your data.',
       })
       navigate(0)
     },
@@ -68,11 +73,11 @@ const RegisterForm = () => {
       .max(255, { message: "That's too long." })
       .optional(),
 
-    password: z.string()
-      .min(6, { message: "We need at least 6 characters buddy." }),
+    password: z.string(),
+      // .min(6, { message: "We need at least 6 characters buddy." }).optional(),
 
     repeatPassword: z.string()
-      .min(6, { message: "We need at least 6 characters buddy." })
+      // .min(6, { message: "We need at least 6 characters buddy." }).optional()
   }).superRefine(({ repeatPassword, password }, ctx) => {
     if (repeatPassword !== password) {
       ctx.addIssue({
@@ -85,10 +90,10 @@ const RegisterForm = () => {
 
   const form = useForm({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      surname: "",
-      email: "",
+    values: {
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
       password: "",
       repeatPassword: "",
     },
@@ -97,23 +102,24 @@ const RegisterForm = () => {
   const onSubmit = (values) => {
     const body = JSON.stringify(
       {
-        email: values.email,
-        password: values.password,
+        email: values.email || null,
+        // password: values.password || null,
         name: values.name || null,
         surname: values.surname || null
       }
     )
-    registerMutation({body: body})
+    console.log(body)
+    settingsMutation({path: `users/${user.id}`, method: 'PUT', body: body})
   };
 
   return (
-    <Card>
+    <Card className="w-full max-w-4xl">
       <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
       <CardHeader>
-        <CardTitle>Sign up</CardTitle>
+        <CardTitle>Settings</CardTitle>
         <CardDescription>
-          Please provide us with your data.
+          You can change your details and credencials here.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -130,12 +136,12 @@ const RegisterForm = () => {
             </FormItem>
           )}
         />
-        <div className="flex gap-4">
+        <div className="flex gap-4 w-full mx-auto">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="min-w-1">
+              <FormItem className="">
                 <FormLabel>First name</FormLabel>
                 <FormControl>
                   <Input placeholder="Steven" {...field} />
@@ -145,11 +151,11 @@ const RegisterForm = () => {
             )}
           />
           <FormField
-            class="w-50"
+            class=""
             control={form.control}
             name="surname"
             render={({ field }) => (
-              <FormItem className="min-w-1">
+              <FormItem className="">
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
                   <Input placeholder="Buffet" {...field} />
@@ -191,7 +197,7 @@ const RegisterForm = () => {
         />
       </CardContent>
       <CardFooter>
-        <Button type="submit">{ isPending ? "Registering..." : "Register" }</Button>
+        <Button type="submit">{ isPending ? "Saving..." : "Save changes" }</Button>
       </CardFooter>
       </form>
       </Form>
@@ -199,4 +205,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default SettingsPage;

@@ -1,5 +1,5 @@
 import React, { memo, useContext, useEffect } from 'react';
-import {NavLink, useNavigate} from "react-router-dom";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FaHouse, FaMagnifyingGlass } from "react-icons/fa6";
@@ -43,7 +43,7 @@ const NavPane = ({className}) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="absolute top-0 left-0">
             <DropdownMenuItem>{user.name} {user.surname}</DropdownMenuItem>
-            <DropdownMenuItem>Change name</DropdownMenuItem>
+            <DropdownMenuItem><Link to="/settings">Settings</Link></DropdownMenuItem>
             <DropdownMenuItem onClick={logout} className="text-destructive">Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
