@@ -25,10 +25,12 @@ import {
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { useToast } from "../components/ui/use-toast"
-import registerFetch from "@/hooks/registerFetch"
 import { AuthContext } from "@/App"
 import { useContext } from "react"
 import genericFetch from "@/hooks/genericFetch"
+import Alert from "@/components/blocks/Alert"
+import deleteFetch from "@/hooks/deleteFetch"
+import Cookies from "js-cookie"
 
 
 
@@ -60,6 +62,30 @@ const SettingsPage = () => {
     }
   })
 
+  const { mutateAsync: deleteAccountMutation, isPending: deletePending } = useMutation({
+    mutationFn: deleteFetch,
+    onSuccess: () => {
+      Cookies.remove('token');
+      localStorage.removeItem('user');
+      toast({
+        variant: "primary",
+        title: "Your account has been deleted",
+        description: 'You will be moved to a better place in 3 seconds.',
+      })
+      setTimeout(() => {
+        navigate(0)
+      }, 5000) 
+    },
+    onError: (error) => {
+      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: error.message,
+      })
+    }
+  })
+
   const registerSchema = z.object({
     email: z.string()
       .min(1, { message: "Please enter something" })
@@ -73,11 +99,11 @@ const SettingsPage = () => {
       .max(255, { message: "That's too long." })
       .optional(),
 
-    password: z.string(),
-      // .min(6, { message: "We need at least 6 characters buddy." }).optional(),
+    password: z.string()
+      .min(6, { message: "We need at least 6 characters buddy." }),
 
     repeatPassword: z.string()
-      // .min(6, { message: "We need at least 6 characters buddy." }).optional()
+      .min(6, { message: "We need at least 6 characters buddy." })
   }).superRefine(({ repeatPassword, password }, ctx) => {
     if (repeatPassword !== password) {
       ctx.addIssue({
@@ -93,7 +119,13 @@ const SettingsPage = () => {
     values: {
       name: user.name,
       surname: user.surname,
-      email: user.email,
+      email: user.email
+    },
+  });
+
+  const formPassword = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
       password: "",
       repeatPassword: "",
     },
@@ -103,7 +135,6 @@ const SettingsPage = () => {
     const body = JSON.stringify(
       {
         email: values.email || null,
-        // password: values.password || null,
         name: values.name || null,
         surname: values.surname || null
       }
@@ -112,7 +143,21 @@ const SettingsPage = () => {
     settingsMutation({path: `users/${user.id}`, method: 'PUT', body: body})
   };
 
+  const onPasswordSubmit = (values) => {
+    const body = JSON.stringify(
+      {
+        password: values.password,
+      }
+    )
+    settingsMutation({path: `users/${user.id}`, method: 'PUT', body: body})
+  };
+
+  const deleteAccount = () => {
+    deleteAccountMutation(`users/${user.id}`);
+  }
+
   return (
+    <>
     <Card className="w-full max-w-4xl">
       <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -165,31 +210,45 @@ const SettingsPage = () => {
             )}
           />
         </div>
-        
+      </CardContent>
+      <CardFooter>
+        <Button type="submit">{ isPending ? "Saving..." : "Save changes" }</Button>
+      </CardFooter>
+      </form>
+      </Form>
+    </Card>
+
+    <Card className="w-full max-w-4xl">
+      <Form {...formPassword}>
+      <form onSubmit={formPassword.handleSubmit(onPasswordSubmit)}>
+      <CardHeader>
+        <CardTitle>Changing Password</CardTitle>
+        <CardDescription>
+          Type your new password if for eg. your old one is your exes birthday.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-2">
         <FormField
-          control={form.control}
+          control={formPassword.control}
           name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="" {...field} />
+                <Input type="password" {...field} />
               </FormControl>
-              <FormDescription>
-                Remember to use strong password :)
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
-          control={form.control}
+          control={formPassword.control}
           name="repeatPassword"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Repeat password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="" {...field} />
+                <Input type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -197,11 +256,33 @@ const SettingsPage = () => {
         />
       </CardContent>
       <CardFooter>
-        <Button type="submit">{ isPending ? "Saving..." : "Save changes" }</Button>
+        <Button type="submit">{ isPending ? "Changing..." : "Change password" }</Button>
       </CardFooter>
       </form>
       </Form>
-    </Card>  
+    </Card>
+
+    <Card className="w-full max-w-4xl">
+    <CardHeader>
+      <CardTitle>Account deletion</CardTitle>
+      <CardDescription>
+        Remember, if you delete your account all content added by you (teas, comments, ratings) will also be deleted.
+      </CardDescription>
+    </CardHeader>
+    <CardContent className="space-y-2">
+    <Alert
+      title="Are you absolutely sure?"
+      description="You are going to delete your account. This action cannot be undone. All data added by you (teas, comments etc.) will be deleted as well."
+      actionButton={
+        <Button variant="destructive" onClick={deleteAccount}>I want to delete this account</Button>
+      }
+    >
+      <Button variant="destructive">Delete account</Button>
+    </Alert> 
+    
+    </CardContent>
+  </Card>  
+  </>
   );
 };
 
