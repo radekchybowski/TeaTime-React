@@ -9,6 +9,7 @@ import NotesWidget from "@/components/blocks/NotesWidget";
 import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import Rating from "@/components/ui/rating";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import formatDate from "@/hooks/formatDate";
@@ -61,7 +62,11 @@ export default function TeaPage() {
 
   return (
     <div className="flex flex-col w-full gap-4">
-      {isTeaLoading && "Loading..."}
+      {isTeaLoading ? 
+        <div className="bg-white rounded-lg w-full h-screen grid place-items-center animate-pulse">
+            <Spinner size="large"/>
+        </div> 
+        : <>
       <ContentHeader 
         image="../img/tea-placeholder.jpg" 
         title={tea?.title}
@@ -141,6 +146,7 @@ export default function TeaPage() {
         <h3>Comments</h3>
         {tea && <CommentsWidget tea={tea}/>}
       </InnerContainer>
+      </>}
     </div>
   );
 }

@@ -68,7 +68,7 @@ const SettingsPage = () => {
       Cookies.remove('token');
       localStorage.removeItem('user');
       toast({
-        variant: "primary",
+
         title: "Your account has been deleted",
         description: 'You will be moved to a better place in 3 seconds.',
       })
@@ -104,14 +104,14 @@ const SettingsPage = () => {
 
     repeatPassword: z.string()
       .min(6, { message: "We need at least 6 characters buddy." })
-  }).superRefine(({ repeatPassword, password }, ctx) => {
-    if (repeatPassword !== password) {
-      ctx.addIssue({
-        code: "custom",
-        message: "The passwords did not match.",
-        path: ['repeatPassword']
-      });
-    }
+  // }).superRefine(({ repeatPassword, password }, ctx) => {
+  //   if (repeatPassword !== password) {
+  //     ctx.addIssue({
+  //       code: "custom",
+  //       message: "The passwords did not match.",
+  //       path: ['repeatPassword']
+  //     });
+  //   }
   });
 
   const form = useForm({
@@ -132,6 +132,7 @@ const SettingsPage = () => {
   });
 
   const onSubmit = (values) => {
+    console.log('dzialam')
     const body = JSON.stringify(
       {
         email: values.email || null,
@@ -140,10 +141,12 @@ const SettingsPage = () => {
       }
     )
     console.log(body)
+    
     settingsMutation({path: `users/${user.id}`, method: 'PUT', body: body})
   };
 
   const onPasswordSubmit = (values) => {
+    console.log('dzialam')
     const body = JSON.stringify(
       {
         password: values.password,
@@ -160,7 +163,7 @@ const SettingsPage = () => {
     <>
     <Card className="w-full max-w-4xl">
       <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form name="formSettings" onSubmit={form.handleSubmit(onSubmit)}>
       <CardHeader>
         <CardTitle>Settings</CardTitle>
         <CardDescription>
@@ -212,7 +215,7 @@ const SettingsPage = () => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button type="submit">{ isPending ? "Saving..." : "Save changes" }</Button>
+        <Button form="formSettings" type="submit">{ isPending ? "Saving..." : "Save changes" }</Button>
       </CardFooter>
       </form>
       </Form>
@@ -220,7 +223,7 @@ const SettingsPage = () => {
 
     <Card className="w-full max-w-4xl">
       <Form {...formPassword}>
-      <form onSubmit={formPassword.handleSubmit(onPasswordSubmit)}>
+      <form name="formPassword" id="formPassword" onSubmit={formPassword.handleSubmit(onPasswordSubmit)}>
       <CardHeader>
         <CardTitle>Changing Password</CardTitle>
         <CardDescription>
@@ -256,7 +259,7 @@ const SettingsPage = () => {
         />
       </CardContent>
       <CardFooter>
-        <Button type="submit">{ isPending ? "Changing..." : "Change password" }</Button>
+        <Button form="formPassword" type="submit">{ isPending ? "Changing..." : "Change password" }</Button>
       </CardFooter>
       </form>
       </Form>

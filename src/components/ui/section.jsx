@@ -22,6 +22,7 @@ import genericFetch from '@/hooks/genericFetch';
 import ErrorPane from '../blocks/ErrorPane';
 import { AuthContext } from '@/App';
 import { NavLink } from 'react-router-dom';
+import { Spinner } from './spinner';
 
 const Section = ({title = null, fetch='teas', items=8, component, children, className, emptyError}) => {
 
@@ -148,7 +149,13 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
         </div>
       </div>
       <div className='w-full flex flex-wrap gap-4'>
-      {isLoading && <div className="w-100 h-100 flex justify-center items-center text-3xl">Loading...</div>}
+      {isLoading && 
+      <>
+      <div className="bg-white rounded-lg w-full h-80 grid place-items-center animate-pulse">
+        <Spinner size="large"/>
+      </div>
+      </>
+      }
       {error && <ErrorPane description={error.name}/>}
       {content}
       { children }

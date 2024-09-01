@@ -30,6 +30,7 @@ import genericFetch from '@/hooks/genericFetch';
 import { useContext, useEffect, useReducer } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "@/App";
+import { Spinner } from "@/components/ui/spinner";
 
 export function EditTeaPage() {
 
@@ -45,7 +46,7 @@ export function EditTeaPage() {
     // cacheTime: 0
   });
 
-  const {data: teaData, isFetchedAfterMount: teaFetched} = useQuery({
+  const {data: teaData, isLoading, isFetchedAfterMount: teaFetched} = useQuery({
     queryFn: () => genericFetch({path: `teas/${id}`}),
     queryKey: ['teas'],
     // cacheTime: 0
@@ -111,6 +112,11 @@ export function EditTeaPage() {
     <Form {...form}>
     <form onSubmit={form.handleSubmit(addTeaSubmit)}>
     <div className="flex flex-col w-full gap-4">
+    {isLoading ? 
+        <div className="rounded-lg w-full h-screen grid place-items-center animate-pulse">
+            <Spinner size="large"/>
+        </div> 
+        : <>
               
       <ContentHeader 
         title="Edit your tea"
@@ -285,6 +291,8 @@ export function EditTeaPage() {
         />
         </div>
       </InnerContainer>
+      </>
+      }
     </div>
     </form>
     </Form>

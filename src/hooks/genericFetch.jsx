@@ -30,7 +30,7 @@ const genericFetch = ({path, search, method = 'GET', body = null, pagination = n
         if (response.status === 401) {
           Cookies.remove('token');
           localStorage.removeItem('user');
-          // navigate('/login')
+          location.reload()
         }
         if (!response.ok) {
           console.log(response)
