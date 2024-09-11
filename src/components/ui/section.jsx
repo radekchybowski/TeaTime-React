@@ -55,7 +55,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
       return
     }
     if (data?.length === 0) {
-      console.log(emptyError)
+      console.log('emptyError:', emptyError)
       console.log(data?.length)
       setContent(emptyError)
       return
@@ -151,13 +151,13 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
       <div className='w-full flex flex-wrap gap-4'>
       {isLoading && 
       <>
-      <div className="bg-white rounded-lg w-full h-80 grid place-items-center animate-pulse">
-        <Spinner size="large"/>
-      </div>
+        <div className="bg-white rounded-lg w-full h-80 grid place-items-center animate-pulse">
+          <Spinner size="large"/>
+        </div>
       </>
       }
-      {error && <ErrorPane description={error.name}/>}
-      {content}
+      { error && <ErrorPane description={error.name}/> }
+      { content }
       { children }
       </div>
       {loadMore && <Button className="mt-4 block mx-auto" onClick={clickLoadMore} variant="outline" size="sm">Load more</Button>}

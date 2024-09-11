@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import { Textarea } from "@/components/ui/textarea";
 import { FaBalanceScaleLeft } from "react-icons/fa";
+import { FaRegClock } from "react-icons/fa";
+import { FaThermometerHalf } from "react-icons/fa";
 
 import { z } from 'zod';
 import {
@@ -49,7 +51,7 @@ export function AddTeaPage() {
     onSuccess: () => {
       queryClient.invalidateQueries(['teas'])
       console.log('success')
-      navigate('/')
+      navigate(-1)
     },
     onError: (error) => console.error(error)
   })
@@ -180,7 +182,7 @@ export function AddTeaPage() {
             render={({ field }) => (
               <FormItem className="flex-1 text-center">
                 <BrewingTile className="min-w-72"
-                  icon={<FaBalanceScaleLeft />}
+                  icon={<FaRegClock />}
                   title={<FormDescription>Time range (in minutes) for how long you should steep this tea.</FormDescription>}
                   content={
                     <>
@@ -201,11 +203,11 @@ export function AddTeaPage() {
             render={({ field }) => (
               <FormItem className="flex-1 text-center">
                 <BrewingTile className="min-w-72"
-                  icon={<FaBalanceScaleLeft />}
+                  icon={<FaThermometerHalf />}
                   title={<FormDescription>Temperature range or value (in Celsius).</FormDescription>}
                   content={
                     <>
-                      <FormLabel>Time</FormLabel>
+                      <FormLabel>Temperature</FormLabel>
                       <FormControl>
                         <Input type="number" className="h-10" placeholder="75-85" {...field} />
                       </FormControl>

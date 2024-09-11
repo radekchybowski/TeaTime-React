@@ -19,6 +19,7 @@ import { AuthContext } from "@/App"
 import genericFetch from "@/hooks/genericFetch"
 import Comment from "./Comment";
 import { Textarea } from "../ui/textarea";
+import { Spinner } from "../ui/spinner"
 
 const NotesWidget = ({tea}) => {
   const authContext = useContext(AuthContext);
@@ -32,9 +33,16 @@ const NotesWidget = ({tea}) => {
       path: `comments`, 
       search: `tea=${tea.id}&author=${user.id}&title=note_widget`}),
     queryKey: ['note'],
-    cacheTime: 0,
     onSuccess: () => {
       console.log('success notee')
+    },
+    onError: (error) => {
+      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: error.message,
+      })
     }
   });
 
@@ -42,7 +50,9 @@ const NotesWidget = ({tea}) => {
     mutationFn: genericFetch,
     onSuccess: (data) => {
       queryClient.invalidateQueries(['note'])
-      console.log('success', data)
+      toast({
+        title: "Note has been saved"
+      })
     },
     onError: (error) => {
       console.log(error)
@@ -56,25 +66,32 @@ const NotesWidget = ({tea}) => {
 
   const noteSchema = z.object({
     note: z.string()
-      .min(1, { message: "Please enter something"})
+      .min(1, { message: "Please enter at least one character."})
   })
 
   const form = useForm({
     resolver: zodResolver(noteSchema),
     values: {
-      note: note?.content
+      note: note?.[0]?.content ?? null
     },
   })
 
   const onSubmit = (values) => {
-    console.log(values.note)
-    const body = JSON.stringify({
-      title: 'note_widget',
-      content: values.note, 
-      tea: `api/teas/${tea.id}`, 
-      author: `api/users/${user.id}`
-    })
-    notesMutation({path: 'comments', method: 'POST', body: body})
+    if(note?.[0] === undefined) {
+      const body = JSON.stringify({
+        title: 'note_widget',
+        content: values.note, 
+        tea: `api/teas/${tea.id}`, 
+        author: `api/users/${user.id}`
+      })
+      notesMutation({path: 'comments', method: 'POST', body: body})
+    } else {
+      const body = JSON.stringify({
+        content: values.note
+      })
+      notesMutation({path: `comments/${note?.[0].id}`, method: 'PUT', body: body})
+    }
+    
   };
 
   return (
@@ -86,9 +103,9 @@ const NotesWidget = ({tea}) => {
           name="note"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Add comment</FormLabel>
+              <FormLabel>Edit your note</FormLabel>
               <FormControl>
-                <Textarea placeholder="Type your message here..." {...field}/>
+                { isNoteLoading ? <Spinner size="large"/> : <Textarea placeholder="Type your message here..." {...field}/> }
               </FormControl>
               <FormMessage />
             </FormItem>

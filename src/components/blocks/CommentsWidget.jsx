@@ -14,7 +14,7 @@ import {
 } from "../ui/form"
 import { Button } from "../ui/button"
 import { useToast } from "../ui/use-toast"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "@/App"
 import genericFetch from "@/hooks/genericFetch"
 import Comment from "./Comment";
@@ -68,7 +68,8 @@ const CommentsWidget = ({tea}) => {
 
   return (
   <>
-    {tea.comments.map(comment => (
+    {tea.comments.length === 0 && <h5>No comments yet</h5>}
+    {tea.comments.filter(comment => comment.title !== 'note_widget').map(comment => (
        <Comment key={comment.id}
          commentId={comment.id}
          authorId={comment.author.id}

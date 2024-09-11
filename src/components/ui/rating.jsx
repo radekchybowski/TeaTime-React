@@ -1,13 +1,14 @@
 import { FaRegStarHalfStroke } from "react-icons/fa6";
 
-const Rating = ({children}) => {
+const Rating = ({value, className}) => {
+  
     return (
-      <div className='flex items-center'>
+      <div className={`flex items-center ${className}`}>
         <i>
           <FaRegStarHalfStroke />
         </i>
         <span className='text-base ml-1'>
-          {children}
+          {value ? value : '-'}
         </span>
       </div>
     );

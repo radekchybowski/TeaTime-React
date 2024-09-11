@@ -17,6 +17,8 @@ import genericFetch from "@/hooks/genericFetch";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
 import { FaBalanceScaleLeft } from "react-icons/fa";
+import { FaRegClock } from "react-icons/fa";
+import { FaThermometerHalf } from "react-icons/fa";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 
@@ -33,8 +35,6 @@ export default function TeaPage() {
   const {data: tea, isLoading: isTeaLoading, isError} = useQuery({
     queryFn: () => genericFetch({path: teaPath}),
     queryKey: [teaPath],
-    cacheTime: 0,
-    retry: false
   });
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function TeaPage() {
   const deleteTea = () => {
     try {
       genericFetch({ path: teaPath, method: 'DELETE'});
-      queryClient.invalidateQueries([])
+      queryClient.invalidateQueries(teaPath)
       navigate(-1)
       toast({
         title: `Tea ${tea?.title} has been deleted`,
@@ -71,10 +71,8 @@ export default function TeaPage() {
         image="../img/tea-placeholder.jpg" 
         title={tea?.title}
         second={<Link to={`/categories/${tea?.category.id}`}>{tea?.category.title}</Link>}
-        third={<Rating>{tea?.currentRating}</Rating>}
+        third={<Rating value={tea?.currentRating}/>}
       >
-          <Button variant="outline" size="icon">Edit</Button>
-          <Button variant="outline" size="icon">Edit</Button>
           <ButtonRating teaId={ id } userId={ user.id }/>
           { user.id === tea?.author.id && 
             <>
@@ -98,42 +96,32 @@ export default function TeaPage() {
       <InnerContainer>
         <h3>Ingredients</h3>
         <p>{tea?.ingredients}</p>
-        <p><b>Region </b>{tea?.region}</p>
-        <p><b>Store </b>{tea?.vendor}</p>
+        {tea?.region && <p><b>Region </b>{tea?.region}</p>}
+        {tea?.vendor && <p><b>Store </b>{tea?.vendor}</p>}
       </InnerContainer>
       <InnerContainer>
         <h3>Brewing</h3>
         <div className="flex flex-wrap gap-2.5">
           <BrewingTile
-            icon={<FaBalanceScaleLeft />}
+            icon={<FaRegClock />}
             title="time"
             content={`${tea?.steepTime} min`}
           />
           <BrewingTile
-            icon={<FaBalanceScaleLeft />}
+            icon={<FaThermometerHalf />}
             title="temperature"
             content={`${tea?.steepTemp} °C`}
           />
-          {/* <BrewingTile
-            icon={<FaBalanceScaleLeft />}
-            title="amount"
-            content="5-6 g"
-          />
-          <BrewingTile
-            icon={<FaBalanceScaleLeft />}
-            title="amount"
-            content="5-6 g"
-          /> */}
         </div>
       </InnerContainer>
-      <InnerContainer>
+      {/* <InnerContainer>
         <h3>Tags</h3>
         <div className="flex flex-wrap gap-2.5">
           {tea?.tags.map(tag => (
             <Button key={tag?.id} className="bg-tile text-secondary-foreground hover:bg-tile/50" size="sm">{tag.title}</Button>
           ))}
           </div>
-      </InnerContainer>
+      </InnerContainer> */}
       <InnerContainer>
         <p><b>Author </b>{tea?.author.email}</p>
         <p><b>Last update </b>{formatDate(tea?.updatedAt)}</p>

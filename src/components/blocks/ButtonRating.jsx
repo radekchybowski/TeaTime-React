@@ -107,7 +107,7 @@ export default function ButtonRating({teaId, userId}) {
       <Popover>
         <PopoverTrigger>
           <Button variant="outline" size="icon">
-            {rating ? rating.length ?rating[0].rating : <FaRegStarHalfStroke /> : <FaRegStarHalfStroke />}
+            {rating ? rating.length ? rating[0].rating : <FaRegStarHalfStroke /> : <FaRegStarHalfStroke />}
           </Button>
         </PopoverTrigger>
         <PopoverContent>

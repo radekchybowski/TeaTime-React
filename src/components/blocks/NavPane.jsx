@@ -51,11 +51,11 @@ const NavPane = ({className}) => {
           </DropdownMenuContent>
         </DropdownMenu>
           <div className='flex'>
-            <Button asChild size="icon" variant="ghost">
+            {/* <Button asChild size="icon" variant="ghost">
               <NavLink to="search">
                 <FaMagnifyingGlass className='text-xl'/>
               </NavLink>
-            </Button>
+            </Button> */}
             <Button asChild size="icon" variant="ghost">
               <NavLink to="add-tea">
                 <FaPlus className='text-xl'/>
