@@ -41,16 +41,17 @@ const SettingsPage = () => {
   const user = authContext.auth.user;
   const { toast } = useToast();
 
-  const { mutateAsync: settingsMutation, isPending } = useMutation({
+  const { mutateAsync: settingsMutation} = useMutation({
     mutationFn: genericFetch,
     onSuccess: (data) => {
       console.log('success', data)
       toast({
-        variant: "primary",
         title: "Success!",
         description: 'You have updated your data.',
       })
-      navigate(0)
+      setTimeout(() => {
+        navigate(0)
+      }, 3000)
     },
     onError: (error) => {
       console.log(error)
@@ -86,7 +87,7 @@ const SettingsPage = () => {
     }
   })
 
-  const registerSchema = z.object({
+  const settingsSchema = z.object({
     email: z.string()
       .min(1, { message: "Please enter something" })
       .email("This is not a valid email."),
@@ -97,25 +98,27 @@ const SettingsPage = () => {
 
     surname: z.string()
       .max(255, { message: "That's too long." })
-      .optional(),
+      .optional()
+  })
 
+  const passwordSchema = z.object({
     password: z.string()
       .min(6, { message: "We need at least 6 characters buddy." }),
 
     repeatPassword: z.string()
       .min(6, { message: "We need at least 6 characters buddy." })
-  // }).superRefine(({ repeatPassword, password }, ctx) => {
-  //   if (repeatPassword !== password) {
-  //     ctx.addIssue({
-  //       code: "custom",
-  //       message: "The passwords did not match.",
-  //       path: ['repeatPassword']
-  //     });
-  //   }
+  }).superRefine(({ repeatPassword, password }, ctx) => {
+    if (repeatPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The passwords did not match.",
+        path: ['repeatPassword']
+      });
+    }
   });
 
   const form = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(settingsSchema),
     values: {
       name: user.name,
       surname: user.surname,
@@ -124,15 +127,16 @@ const SettingsPage = () => {
   });
 
   const formPassword = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(passwordSchema),
     defaultValues: {
       password: "",
       repeatPassword: "",
     },
   });
 
-  const onSubmit = (values) => {
-    console.log('dzialam')
+  const onSettingsSubmit = (values) => {
+
+    console.log('settings submit')
     const body = JSON.stringify(
       {
         email: values.email || null,
@@ -146,7 +150,7 @@ const SettingsPage = () => {
   };
 
   const onPasswordSubmit = (values) => {
-    console.log('dzialam')
+    console.log('password submit')
     const body = JSON.stringify(
       {
         password: values.password,
@@ -163,7 +167,7 @@ const SettingsPage = () => {
     <>
     <Card className="w-full max-w-4xl">
       <Form {...form}>
-      <form name="formSettings" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="formSettings" onSubmit={form.handleSubmit(onSettingsSubmit)}>
       <CardHeader>
         <CardTitle>Settings</CardTitle>
         <CardDescription>
@@ -215,7 +219,7 @@ const SettingsPage = () => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button form="formSettings" type="submit">{ isPending ? "Saving..." : "Save changes" }</Button>
+        <Button form="formSettings" type="submit">Save changes</Button>
       </CardFooter>
       </form>
       </Form>
@@ -223,7 +227,7 @@ const SettingsPage = () => {
 
     <Card className="w-full max-w-4xl">
       <Form {...formPassword}>
-      <form name="formPassword" id="formPassword" onSubmit={formPassword.handleSubmit(onPasswordSubmit)}>
+      <form id="formPassword" onSubmit={formPassword.handleSubmit(onPasswordSubmit)}>
       <CardHeader>
         <CardTitle>Changing Password</CardTitle>
         <CardDescription>
@@ -259,7 +263,7 @@ const SettingsPage = () => {
         />
       </CardContent>
       <CardFooter>
-        <Button form="formPassword" type="submit">{ isPending ? "Changing..." : "Change password" }</Button>
+        <Button form="formPassword" type="submit">Change password</Button>
       </CardFooter>
       </form>
       </Form>

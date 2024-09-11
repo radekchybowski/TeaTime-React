@@ -34,7 +34,12 @@ const genericFetch = ({path, search, method = 'GET', body = null, pagination = n
         }
         if (!response.ok) {
           console.log(response)
-          .then(body => {throw new Error('Error has occurred: ' + body.error)})
+          if(response.status === 422) {
+            throw new Error('This email address is taken.')
+          }
+          else {
+            throw new Error('Error has occurred: ' + response.error)
+          }
         }
         return response.json()
       })
