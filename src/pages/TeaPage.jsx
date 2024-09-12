@@ -123,7 +123,7 @@ export default function TeaPage() {
           </div>
       </InnerContainer> */}
       <InnerContainer>
-        <p><b>Author </b>{tea?.author.email}</p>
+        <p><b>Author </b>{tea?.author.name} {tea?.author.surname}</p>
         <p><b>Last update </b>{formatDate(tea?.updatedAt)}</p>
       </InnerContainer>
       <InnerContainer>
