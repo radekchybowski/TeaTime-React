@@ -24,14 +24,15 @@ import { AuthContext } from '@/App';
 import { NavLink } from 'react-router-dom';
 import { Spinner } from './spinner';
 
-const Section = ({title = null, fetch='teas', items=8, component, children, className, emptyError}) => {
+const Section = ({title = null, fetch='teas', items=10, component, children, className, emptyError}) => {
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(null);
   const [content, setContent] = useState("");
   const [header, setHeader] = useState(title);
   const [pagination, setPagination] = useState(items);
   const [showForm, setShowForm] = useState(false);
-  const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(true);
+  const [showMoreState, setShowMoreState] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
   const { auth } = useContext(AuthContext);
   const queryClient = useQueryClient();
@@ -41,15 +42,15 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
     queryKey: [fetch, searchQuery, pagination],
     onSuccess: () => {
       // console.log(pagination)
-      console.log('showMore:', showMore)
+      // console.log('showMore:', showMore)
     },
     cacheTime: 0
   });
 
   useEffect(() => {
-    console.log('isSuccess:', isSuccess)
-    console.log('pag:', pagination)
-    console.log('showMore:', showMore)
+    // console.log('isSuccess:', isSuccess)
+    // console.log('pag:', pagination)
+    // console.log('showMore:', showMore)
     if (isError) {
       setContent(<ErrorPane/>)
       return
@@ -60,7 +61,6 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
       setContent(emptyError)
       return
     }
-    if (data?.length <= pagination) setShowMore(true)
     const content = data?.map((entity) => {
       
       if('categories' == component) return <CategoryTile key={entity.id} properties={entity} image="img/tea-placeholder.jpg"/>
@@ -71,11 +71,12 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
       }
     })
     setContent(content)
+    // if ((data?.length < pagination)) setShowMore(false)
   }
-  ,[isSuccess])
+  ,[isSuccess, data])
 
   const searchSchema = z.object({
-    search: z.string().min(1, {
+    search: z.string().min(0, {
       message: "Type min. 3 characters...",
     }),
   })
@@ -87,16 +88,19 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
     },
   })
  
-  function searchSubmit(values) {
-    if(values.search.length > 2) 
-      setSearchQuery(`title=${values.search}`)
-    else
+  function searchSubmit({search}) {
+    if(search.length > 2) 
+      setSearchQuery(`title=${search}`)
+    else {
       setSearchQuery("")
+      queryClient.invalidateQueries([fetch])
+    }
+      
   }
 
   const clickShowMore = () => {
-    setShowMore(!showMore)
-    if(showMore) {
+    setShowMoreState(!showMoreState)
+    if(showMoreState) {
       setPagination(items)
       setLoadMore(false)
     } else {
@@ -108,7 +112,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
   }
 
   const clickLoadMore = () => {
-    if(pagination < data.length) {
+    if(pagination <= data.length) {
       setPagination(pagination + items)
       queryClient.invalidateQueries([fetch])
     }
@@ -122,7 +126,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
         <div className='flex p-0 items-center '>
           {showForm && (
             <Form {...form}>
-              <form onKeyUp={form.handleSubmit(searchSubmit)}>
+              <form onSubmit={form.handleSubmit(searchSubmit)} onKeyUp={form.handleSubmit(searchSubmit)}>
                 <FormField
                   control={form.control}
                   name="search"
@@ -130,7 +134,7 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
                     <FormItem>
                       <FormLabel className="hidden">Search this section</FormLabel>
                       <FormControl>
-                        <Input className="h-8" placeholder="name of tea..." {...field} />
+                        <Input className="h-8" placeholder="name of tea... (min. 3 char.)" {...field} />
                       </FormControl>
                       <FormDescription className="hidden">
                         Use this field to search through teas in section {header}.
@@ -143,9 +147,9 @@ const Section = ({title = null, fetch='teas', items=8, component, children, clas
             </Form>
           )}
           <Button onClick={() => setShowForm(!showForm)} variant="ghost" size="sm"><FaMagnifyingGlass/></Button>
-          <Button onClick={clickShowMore} variant="ghost" size="sm">
-            {showMore ? 'Show less' : 'Show more'}
-          </Button>
+          {showMore && <Button onClick={clickShowMore} variant="ghost" size="sm">
+            {showMoreState ? 'Show less' : 'Show more'}
+          </Button>}
         </div>
       </div>
       <div className='w-full flex flex-wrap gap-4'>
