@@ -39,7 +39,8 @@ const NavPane = ({className}) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="absolute top-0 left-0">
             <DropdownMenuItem disabled>{user.name} {user.surname}</DropdownMenuItem>
-            <DropdownMenuItem><Link to="/settings">Settings</Link></DropdownMenuItem>
+            <Link to="/settings"><DropdownMenuItem>Settings</DropdownMenuItem></Link>
+            <Link to="/about"><DropdownMenuItem>About</DropdownMenuItem></Link>
             <DropdownMenuItem onClick={logout} className="text-destructive">Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

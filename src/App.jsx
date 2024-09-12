@@ -14,6 +14,7 @@ import CategoryPage from './pages/CategoryPage';
 import { createContext, useState } from 'react';
 import EditTeaPage from './pages/EditTeaPage';
 import SettingsPage from './pages/SettingsPage';
+import AboutPage from './pages/AboutPage';
 
 
 const router = createBrowserRouter(
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
         <Route path='add-tea' element={ <AddTeaPage /> } />
         <Route path='edit-tea/:id' element={ <EditTeaPage /> } />
         <Route path='settings' element={ <SettingsPage /> } />
+        <Route path='about' element={ <AboutPage /> } />
         <Route path='nav' element={ <NavPane /> } />
         <Route path='*' element={ <NotFound /> } />
       </Route>
