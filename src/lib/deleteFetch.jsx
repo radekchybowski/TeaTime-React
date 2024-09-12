@@ -1,9 +1,10 @@
 import Cookies from "js-cookie";
 
 const deleteFetch = (path) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const token = Cookies.get('token');
 
-  return fetch(`http://localhost:8000/api/${path}`, {
+  return fetch(`${apiUrl}/api/${path}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

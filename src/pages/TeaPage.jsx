@@ -2,7 +2,6 @@ import { AuthContext } from "@/App";
 import Alert from "@/components/blocks/Alert";
 import BrewingTile from "@/components/blocks/BrewingTile";
 import ButtonRating from "@/components/blocks/ButtonRating";
-import Comment from "@/components/blocks/Comment";
 import CommentsWidget from "@/components/blocks/CommentsWidget";
 import ContentHeader from "@/components/blocks/ContentHeader";
 import NotesWidget from "@/components/blocks/NotesWidget";
@@ -10,13 +9,11 @@ import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import Rating from "@/components/ui/rating";
 import { Spinner } from "@/components/ui/spinner";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import formatDate from "@/hooks/formatDate";
-import genericFetch from "@/hooks/genericFetch";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import formatDate from "@/lib/formatDate";
+import genericFetch from "@/lib/genericFetch";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
-import { FaBalanceScaleLeft } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
 import { FaThermometerHalf } from "react-icons/fa";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -34,14 +31,15 @@ export default function TeaPage() {
 
   const {data: tea, isLoading: isTeaLoading, isError} = useQuery({
     queryFn: () => genericFetch({path: teaPath}),
-    queryKey: [teaPath],
+    queryKey: ['currentTea'],
+    retry: false
   });
 
   useEffect(() => {
     if (isError) {
       navigate("/404")
     }
-  },[isError]);
+  },[isError, navigate]);
 
   const deleteTea = () => {
     try {
@@ -114,14 +112,6 @@ export default function TeaPage() {
           />
         </div>
       </InnerContainer>
-      {/* <InnerContainer>
-        <h3>Tags</h3>
-        <div className="flex flex-wrap gap-2.5">
-          {tea?.tags.map(tag => (
-            <Button key={tag?.id} className="bg-tile text-secondary-foreground hover:bg-tile/50" size="sm">{tag.title}</Button>
-          ))}
-          </div>
-      </InnerContainer> */}
       <InnerContainer>
         <p><b>Author </b>{tea?.author.name} {tea?.author.surname}</p>
         <p><b>Last update </b>{formatDate(tea?.updatedAt)}</p>

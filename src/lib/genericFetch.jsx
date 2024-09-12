@@ -1,9 +1,8 @@
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 
 const genericFetch = ({path, search, method = 'GET', body = null, pagination = null}) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const token = Cookies.get('token');
-  // const navigate = useNavigate();
   path = path.replace('/api/', '')
 
   if (pagination) {
@@ -15,9 +14,8 @@ const genericFetch = ({path, search, method = 'GET', body = null, pagination = n
     let separator = path.includes('?') ? '&' : '?';
     path = path + separator + search;
   }
-  console.log(path)
 
-  return fetch(`http://localhost:8000/api/${path}`, {
+  return fetch(`${apiUrl}/api/${path}`, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +31,6 @@ const genericFetch = ({path, search, method = 'GET', body = null, pagination = n
           location.reload()
         }
         if (!response.ok) {
-          console.log(response)
           if(response.status === 422) {
             throw new Error('This email address is taken.')
           }

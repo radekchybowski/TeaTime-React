@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { set, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 
 import {
@@ -25,11 +25,7 @@ import {
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useToast } from "../ui/use-toast"
-import { useContext } from "react"
-import { AuthContext } from "@/App"
-import loginFetch from "@/hooks/loginFetch"
-import genericFetch from "@/hooks/genericFetch"
-import Cookies from "js-cookie"
+import loginFetch from "@/lib/loginFetch"
 
 
 
@@ -46,7 +42,6 @@ const LoginForm = () => {
       navigate('/')
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -112,7 +107,7 @@ const LoginForm = () => {
                 <Input type="password" placeholder="" {...field} />
               </FormControl>
               <FormDescription>
-                Remember to use strong password :)
+                <p>Remember to use strong password :)</p>
               </FormDescription>
               <FormMessage />
             </FormItem>

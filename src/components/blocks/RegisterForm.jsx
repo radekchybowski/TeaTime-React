@@ -25,7 +25,7 @@ import {
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useToast } from "../ui/use-toast"
-import registerFetch from "@/hooks/registerFetch"
+import registerFetch from "@/lib/registerFetch"
 
 
 
@@ -36,17 +36,17 @@ const RegisterForm = () => {
 
   const { mutateAsync: registerMutation, isPending } = useMutation({
     mutationFn: registerFetch,
-    onSuccess: (data) => {
-      console.log('success', data)
+    onSuccess: () => {
       toast({
         variant: "primary",
         title: "Success!",
         description: 'You are now registered.',
       })
-      navigate(0)
+      setTimeout(() => {
+        navigate(0)
+      }, 2000)
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",

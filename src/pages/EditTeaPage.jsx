@@ -3,7 +3,6 @@ import ContentHeader from "@/components/blocks/ContentHeader";
 import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import { Textarea } from "@/components/ui/textarea";
-import { FaBalanceScaleLeft } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
 import { FaThermometerHalf } from "react-icons/fa";
 
@@ -27,12 +26,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import genericFetch from '@/hooks/genericFetch';
-import { useContext, useEffect, useReducer } from "react";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import genericFetch from '@/lib/genericFetch';
+import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "@/App";
 import { Spinner } from "@/components/ui/spinner";
+import { useToast } from "@/components/ui/use-toast";
 
 export function EditTeaPage() {
 
@@ -41,30 +41,41 @@ export function EditTeaPage() {
   const authContext = useContext(AuthContext);
   const user = authContext.auth.user;
   const { id } = useParams();
+  const { toast } = useToast();
 
   const categoryQuery = useQuery({
     queryFn: () => genericFetch({path: 'categories'}),
     queryKey: ['categories'],
-    // cacheTime: 0
   });
 
-  const {data: teaData, isLoading, isFetchedAfterMount: teaFetched} = useQuery({
+  const {data: teaData, isLoading, isError } = useQuery({
     queryFn: () => genericFetch({path: `teas/${id}`}),
     queryKey: ['teas'],
-    // cacheTime: 0
-    onSuccess: () => {
-      console.log(teaData.category);
-    }
+    retry: false
   });
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/404")
+    }
+  },[isError]);
 
   const {mutateAsync: editTeaMutation} = useMutation({
     mutationFn: genericFetch,
     onSuccess: () => {
-      queryClient.invalidateQueries(['teas'])
-      console.log('success')
+      queryClient.invalidateQueries(['currentTea'])
       navigate(-1)
+      toast({
+        title: `Tea has been edited`,
+      })
     },
-    onError: (error) => console.error(error)
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: error.message,
+      })
+    }
   })
 
   const addTeaSchema = z.object({
@@ -84,8 +95,8 @@ export function EditTeaPage() {
     ingredients: z.string().min(3),
     steepTime: z.coerce.number().min(1),
     steepTemp: z.coerce.number().min(1),
-    region: z.string().min(3).optional(),
-    vendor: z.string().min(3).optional()
+    region: z.string().min(3).optional().nullable(),
+    vendor: z.string().min(3).optional().nullable()
   })
 
   const form = useForm({
@@ -106,10 +117,13 @@ export function EditTeaPage() {
   function addTeaSubmit(values) {
     values = JSON.stringify(values)
     editTeaMutation({path: `teas/${teaData.id}`, method: 'PUT', body: values})
-    console.log(values)
   }
 
   return (
+    <>
+    { user.id !== teaData?.author.id &&
+        navigate(-1)
+    }
     
     <Form {...form}>
     <form onSubmit={form.handleSubmit(addTeaSubmit)}>
@@ -298,6 +312,7 @@ export function EditTeaPage() {
     </div>
     </form>
     </Form>
+    </>
   );
 }
 

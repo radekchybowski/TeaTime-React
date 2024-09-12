@@ -15,8 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -39,7 +37,7 @@ const tileVariants = cva(
 );
 
 const Tile = React.forwardRef(
-  ({ className, variant, content, asChild = false, children, ...props }, ref) => {
+  ({ className, variant, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "tile";
     return (
       <DropdownMenu className="relative">

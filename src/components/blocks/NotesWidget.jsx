@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { set, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,10 +13,9 @@ import {
 } from "../ui/form"
 import { Button } from "../ui/button"
 import { useToast } from "../ui/use-toast"
-import { useContext, useEffect, useLayoutEffect } from "react"
+import { useContext } from "react"
 import { AuthContext } from "@/App"
-import genericFetch from "@/hooks/genericFetch"
-import Comment from "./Comment";
+import genericFetch from "@/lib/genericFetch"
 import { Textarea } from "../ui/textarea";
 import { Spinner } from "../ui/spinner"
 
@@ -33,11 +31,7 @@ const NotesWidget = ({tea}) => {
       path: `comments`, 
       search: `tea=${tea.id}&author=${user.id}&title=note_widget`}),
     queryKey: ['note'],
-    onSuccess: () => {
-      console.log('success notee')
-    },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -48,14 +42,13 @@ const NotesWidget = ({tea}) => {
 
   const { mutateAsync: notesMutation, isPending } = useMutation({
     mutationFn: genericFetch,
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['note'])
       toast({
         title: "Note has been saved"
       })
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",

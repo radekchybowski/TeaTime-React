@@ -4,21 +4,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import genericFetch from "@/hooks/genericFetch";
+import genericFetch from "@/lib/genericFetch";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaRegStarHalfStroke } from "react-icons/fa6";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "@/App";
-import deleteFetch from "@/hooks/deleteFetch";
+import deleteFetch from "@/lib/deleteFetch";
 import { toast } from "../ui/use-toast";
 
 
@@ -28,9 +26,8 @@ export default function ButtonRating({teaId, userId}) {
   const user = authContext.auth.user;
 
   const queryClient = useQueryClient();
-  const [selected, setSelected] = useState(0);
   
-  const {data: rating, isFetching, isFetched} = useQuery({
+  const {data: rating} = useQuery({
     queryFn: () => genericFetch({path: 'ratings', search: `tea.id=${teaId}&author.id=${user.id}`}),
     queryKey: ['rating'],
     enabled: !!user,
@@ -46,7 +43,6 @@ export default function ButtonRating({teaId, userId}) {
       })
     },
     onError: (error) => {
-      console.error(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -64,7 +60,6 @@ export default function ButtonRating({teaId, userId}) {
       })
     },
     onError: (error) => {
-      console.error(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -74,8 +69,6 @@ export default function ButtonRating({teaId, userId}) {
   })
 
   const handleSelectChange = (value) => {
-    setSelected(value)
-
     let method = 'POST'
     let path = 'ratings'
 
@@ -127,7 +120,6 @@ export default function ButtonRating({teaId, userId}) {
               <SelectItem value={8}>{8}</SelectItem>
               <SelectItem value={9}>{9}</SelectItem>
               <SelectItem value={10}>{10}</SelectItem>
-              {/* <SelectItem value={10}>{rating && rating[0].id}</SelectItem> */}
             </SelectContent>
           </Select>
         </PopoverContent>

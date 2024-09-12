@@ -2,9 +2,10 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 const loginFetch = async ({path = 'login', body}) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   let data; 
 
-  await fetch(`http://localhost:8000/api/${path}`, {
+  await fetch(`${apiUrl}/api/${path}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,11 +1,9 @@
-import { createBrowserRouter, Route, createRoutesFromElements, RouterProvider, useNavigate } from 'react-router-dom';
+import { createBrowserRouter, Route, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout'
 import HomePage from './pages/HomePage';
 import NotFound from './pages/NotFoundPage';
 import NavPane from './components/blocks/NavPane';
 import CategoriesPage from './pages/CategoriesPage';
-import CollectionsPage from './pages/CollectionsPage';
-import SearchPage from './pages/SearchPage';
 import AddTeaPage from './pages/AddTeaPage';
 import LibraryPage from './pages/LibraryPage';
 import LoginPage from './pages/LoginPage';
@@ -27,8 +25,6 @@ const router = createBrowserRouter(
         <Route path='categories' element={ <CategoriesPage /> } />
         <Route path='categories/:id' element={ <CategoryPage /> } />
         <Route path='library' element={ <LibraryPage /> } />
-        <Route path='collections' element={ <CollectionsPage /> } />
-        <Route path='search' element={ <SearchPage /> } />
         <Route path='teas/:id' element={ <TeaPage /> } />
         <Route path='add-tea' element={ <AddTeaPage /> } />
         <Route path='edit-tea/:id' element={ <EditTeaPage /> } />

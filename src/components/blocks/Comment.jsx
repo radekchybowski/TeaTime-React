@@ -4,24 +4,21 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { AuthContext } from "@/App";
 import { useContext } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import genericFetch from "@/hooks/genericFetch";
 import { toast } from "../ui/use-toast";
-import deleteFetch from "@/hooks/deleteFetch";
-import formatDate from "@/hooks/formatDate";
+import deleteFetch from "@/lib/deleteFetch";
+import formatDate from "@/lib/formatDate";
 
 const Comment = ({commentId, authorId, nickname, content, date, className}) => {
   const authContext = useContext(AuthContext);
   const queryClient = useQueryClient();
   const user = authContext.auth.user;
 
-  const { mutateAsync: deleteCommentMutation, isPending } = useMutation({
+  const { mutateAsync: deleteCommentMutation } = useMutation({
     mutationFn: deleteFetch,
     onSuccess: () => {
       queryClient.invalidateQueries([''])
@@ -30,7 +27,6 @@ const Comment = ({commentId, authorId, nickname, content, date, className}) => {
       })
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -41,7 +37,6 @@ const Comment = ({commentId, authorId, nickname, content, date, className}) => {
 
   const handleDelete = () => {
     deleteCommentMutation(`comments/${commentId}`)
-    console.log(`comments/${commentId}`)
   }
 
   return (

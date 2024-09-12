@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { set, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,9 +13,9 @@ import {
 } from "../ui/form"
 import { Button } from "../ui/button"
 import { useToast } from "../ui/use-toast"
-import { useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import { AuthContext } from "@/App"
-import genericFetch from "@/hooks/genericFetch"
+import genericFetch from "@/lib/genericFetch"
 import Comment from "./Comment";
 import { Textarea } from "../ui/textarea";
 
@@ -31,10 +30,8 @@ const CommentsWidget = ({tea}) => {
     mutationFn: genericFetch,
     onSuccess: (data) => {
       queryClient.invalidateQueries([''])
-      console.log('success', data)
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -56,7 +53,6 @@ const CommentsWidget = ({tea}) => {
   })
 
   const onSubmit = (values) => {
-    console.log(values)
     const body = JSON.stringify({
       content: values.content, 
       tea: `api/teas/${tea.id}`, 

@@ -1,7 +1,5 @@
 import ErrorPane from "@/components/blocks/ErrorPane";
-import { Button } from "@/components/ui/button";
 import Section from "@/components/ui/section";
-import { NavLink } from "react-router-dom";
 
 const CategoriesPage = () => {
   return (

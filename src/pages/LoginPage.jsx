@@ -1,6 +1,5 @@
 import RegisterForm from "@/components/blocks/RegisterForm"
 import LoginForm from "@/components/blocks/LoginForm"
-
 import {
   Tabs,
   TabsContent,
@@ -10,7 +9,6 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react";
 import Cookies from "js-cookie";
-
 
 export default function LoginPage() {
 const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { Button } from './button';
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import CategoryTile from '../blocks/CategoryTile';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tile } from './tile';
 import CardTea from '../blocks/CardTea';
 import { z } from 'zod';
@@ -18,10 +18,8 @@ import { Input } from "@/components/ui/input"
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import genericFetch from '@/hooks/genericFetch';
+import genericFetch from '@/lib/genericFetch';
 import ErrorPane from '../blocks/ErrorPane';
-import { AuthContext } from '@/App';
-import { NavLink } from 'react-router-dom';
 import { Spinner } from './spinner';
 
 const Section = ({title = null, fetch='teas', items=10, component, children, className, emptyError}) => {
@@ -34,35 +32,23 @@ const Section = ({title = null, fetch='teas', items=10, component, children, cla
   const [showMore, setShowMore] = useState(true);
   const [showMoreState, setShowMoreState] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
-  const { auth } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
   const {data, isLoading, error, isError, isSuccess} = useQuery({
     queryFn: () => genericFetch({path: fetch, search: searchQuery, pagination: pagination}),
-    queryKey: [fetch, searchQuery, pagination],
-    onSuccess: () => {
-      // console.log(pagination)
-      // console.log('showMore:', showMore)
-    },
-    cacheTime: 0
+    queryKey: [fetch, searchQuery, pagination]
   });
 
   useEffect(() => {
-    // console.log('isSuccess:', isSuccess)
-    // console.log('pag:', pagination)
-    // console.log('showMore:', showMore)
     if (isError) {
       setContent(<ErrorPane/>)
       return
     }
     if (data?.length === 0) {
-      console.log('emptyError:', emptyError)
-      console.log(data?.length)
       setContent(emptyError)
       return
     }
     const content = data?.map((entity) => {
-      
       if('categories' == component) return <CategoryTile key={entity.id} properties={entity} image="img/tea-placeholder.jpg"/>
       if('collections' == component) return <Tile key={entity.id}>{entity.title}</Tile>
       if('teas' == component) {
@@ -71,7 +57,6 @@ const Section = ({title = null, fetch='teas', items=10, component, children, cla
       }
     })
     setContent(content)
-    // if ((data?.length < pagination)) setShowMore(false)
   }
   ,[isSuccess, data])
 

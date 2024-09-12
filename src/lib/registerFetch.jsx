@@ -1,5 +1,6 @@
 const registerFetch = ({body = null}) => {
-  return fetch(`http://localhost:8000/api/register`, {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  return fetch(`${apiUrl}/api/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -12,13 +13,9 @@ const registerFetch = ({body = null}) => {
           throw new Error('This email address is already registered.')
         }
         else if (!response.ok) {
-          console.log(response)
           throw new Error('Error has occurred: ' + response.body.error)
         }
         else return response.json()
-      })
-      .then(data => {
-        return data
       })
 }
 

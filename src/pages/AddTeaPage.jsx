@@ -3,7 +3,6 @@ import ContentHeader from "@/components/blocks/ContentHeader";
 import { Button } from "@/components/ui/button";
 import InnerContainer from "@/components/ui/innerContainer";
 import { Textarea } from "@/components/ui/textarea";
-import { FaBalanceScaleLeft } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
 import { FaThermometerHalf } from "react-icons/fa";
 
@@ -27,11 +26,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import genericFetch from '@/hooks/genericFetch';
-import { useContext, useEffect, useReducer } from "react";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import genericFetch from '@/lib/genericFetch';
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/App";
+import { toast, useToast } from "../components/ui/use-toast";
 
 export function AddTeaPage() {
 
@@ -39,21 +39,29 @@ export function AddTeaPage() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const user = authContext.auth.user;
+  const { toast } = useToast();
 
   const categoryQuery = useQuery({
     queryFn: () => genericFetch({path: 'categories'}),
-    queryKey: ['categories'],
-    // cacheTime: 0
+    queryKey: ['categories']
   });
 
   const {mutateAsync: addTeaMutation} = useMutation({
     mutationFn: genericFetch,
     onSuccess: () => {
-      queryClient.invalidateQueries(['teas'])
-      console.log('success')
+      queryClient.invalidateQueries([''])
       navigate(-1)
+      toast({
+        title: `Tea has been added`,
+      })
     },
-    onError: (error) => console.error(error)
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong.",
+        description: error.message,
+      })
+    }
   })
 
   const addTeaSchema = z.object({
@@ -88,7 +96,6 @@ export function AddTeaPage() {
     values = {...values, author: `api/users/${user.id}`}
     values = JSON.stringify(values)
     addTeaMutation({path: 'teas', method: 'POST', body: values})
-    console.log(values)
   }
 
 
@@ -97,7 +104,6 @@ export function AddTeaPage() {
 
 
   return (
-    
     <Form {...form}>
     <form onSubmit={form.handleSubmit(addTeaSubmit)}>
     <div className="flex flex-col w-full gap-4">

@@ -4,25 +4,23 @@ import NavPane from "@/components/blocks/NavPane"
 import Container from "@/components/ui/container"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { toast } from "@/components/ui/use-toast"
-import genericFetch from "@/hooks/genericFetch"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import genericFetch from "@/lib/genericFetch"
+import { useMutation } from "@tanstack/react-query"
 import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode"
-import { useContext, useEffect, useLayoutEffect } from "react"
-import { NavLink, Outlet } from "react-router-dom"
+import { useContext, useLayoutEffect } from "react"
+import { Outlet } from "react-router-dom"
 
 function AppLayout() {
 
   const authContext = useContext(AuthContext)
 
-  const { mutateAsync: userMutation, isPending } = useMutation({
+  const { mutateAsync: userMutation } = useMutation({
     mutationFn: genericFetch,
     onSuccess: (data) => {
-      console.log("Fetch:", data[0])
       authContext.setAuth({...authContext.auth, user: data[0]})
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -34,11 +32,9 @@ function AppLayout() {
   useLayoutEffect(() => {
     if(localStorage.getItem('user')) {
       const user = jwtDecode(Cookies.get('token'))
-      console.log(user.username)
       userMutation({path: `users?email=${user.username}`})
-      console.log(authContext.auth.user)
     }
-  },[])
+  },[userMutation])
 
   
   return (

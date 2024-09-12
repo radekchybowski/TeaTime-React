@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
 const ErrorPane = ({title="It looks like something went wrong :(", description="No content found", button=null}) => {

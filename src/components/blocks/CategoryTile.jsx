@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const CategoryTile = ({children, properties}) => {
+const CategoryTile = ({properties}) => {
   let image;
   properties.image ? image = properties.image : image = "/img/teaCard-bg.jpg";
 

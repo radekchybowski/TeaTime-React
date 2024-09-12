@@ -16,7 +16,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,9 +26,9 @@ import { Button } from "../components/ui/button"
 import { useToast } from "../components/ui/use-toast"
 import { AuthContext } from "@/App"
 import { useContext } from "react"
-import genericFetch from "@/hooks/genericFetch"
+import genericFetch from "@/lib/genericFetch"
 import Alert from "@/components/blocks/Alert"
-import deleteFetch from "@/hooks/deleteFetch"
+import deleteFetch from "@/lib/deleteFetch"
 import Cookies from "js-cookie"
 
 
@@ -43,8 +42,7 @@ const SettingsPage = () => {
 
   const { mutateAsync: settingsMutation} = useMutation({
     mutationFn: genericFetch,
-    onSuccess: (data) => {
-      console.log('success', data)
+    onSuccess: () => {
       toast({
         title: "Success!",
         description: 'You have updated your data.',
@@ -54,7 +52,6 @@ const SettingsPage = () => {
       }, 3000)
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -78,7 +75,6 @@ const SettingsPage = () => {
       }, 5000) 
     },
     onError: (error) => {
-      console.log(error)
       toast({
         variant: "destructive",
         title: "Something went wrong.",
@@ -135,8 +131,6 @@ const SettingsPage = () => {
   });
 
   const onSettingsSubmit = (values) => {
-
-    console.log('settings submit')
     const body = JSON.stringify(
       {
         email: values.email || null,
@@ -144,16 +138,13 @@ const SettingsPage = () => {
         surname: values.surname || null
       }
     )
-    console.log(body)
-    
     settingsMutation({path: `users/${user.id}`, method: 'PUT', body: body})
   };
 
   const onPasswordSubmit = (values) => {
-    console.log('password submit')
     const body = JSON.stringify(
       {
-        password: values.password,
+        password: values.password
       }
     )
     settingsMutation({path: `users/${user.id}`, method: 'PUT', body: body})
